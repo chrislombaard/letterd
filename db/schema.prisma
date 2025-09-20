@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" 
+  url      = env("DATABASE_URL")
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+}
+
+enum SubscriberStatus {
+  ACTIVE
+  UNSUBSCRIBED
+  BOUNCED
+}
+
+enum DeliveryStatus {
+  PENDING
+  IN_PROGRESS
+  SENT
+  FAILED
+}
+
+model Subscriber {
+  id        String           @id @default(cuid())
+  email     String           @unique
+  status    SubscriberStatus @default(ACTIVE)
+  createdAt DateTime         @default(now())
+  
+  deliveries Delivery[]
+}
+
+
+model Campaign {
+  id          String         @id @default(cuid())
+  name        String
+  subject     String
+  bodyHtml    String
+  status      CampaignStatus @default(DRAFT)
+  scheduledAt DateTime?
+  createdAt   DateTime       @default(now())
+
+  deliveries  Delivery[]
+
+  @@index([status, scheduledAt])
+}
+
+model Delivery {
+  id           String         @id @default(cuid())
+  campaignId   String
+  subscriberId String
+  status       DeliveryStatus @default(PENDING)
+  error        String?
+  createdAt    DateTime       @default(now())
+  sentAt       DateTime?
+
+  campaign     Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  subscriber   Subscriber     @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, subscriberId])
+  @@index([status, createdAt])
+}
