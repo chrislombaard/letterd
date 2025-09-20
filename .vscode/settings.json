@@ -1,0 +1,5 @@
+{
+    "jest.jestCommandLine": "npm run test --",
+    "jest.rootPath": ".",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
