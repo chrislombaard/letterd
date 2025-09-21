@@ -1,6 +1,3 @@
-// Prisma Edge client, but when we add background workers, switch to node prisma client
-export const runtime = "edge"; 
-
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { CampaignSchedule } from "@/lib/validation";
