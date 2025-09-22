@@ -7,8 +7,7 @@ on:
 jobs:
   tick:
     runs-on: ubuntu-latest
-    # uncomment if your secrets live in an environment
-    # environment: production
+    environment: production
     env:
       ENDPOINT: ${{ secrets.CRON_ENDPOINT }} # e.g. https://your-app.vercel.app/api/cron/tick
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
