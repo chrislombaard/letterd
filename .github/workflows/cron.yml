@@ -8,9 +8,9 @@ jobs:
   tick:
     runs-on: ubuntu-latest
     env:
-      ENDPOINT: ${{ secrets.CRON_ENDPOINT }}
-      CRON_SECRET: ${{ secrets.CRON_SECRET }}
-      VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+      ENDPOINT: ${{ vars.CRON_ENDPOINT }}
+      CRON_SECRET: ${{ vars.CRON_SECRET }}
+      VERCEL_BYPASS_TOKEN: ${{ vars.VERCEL_AUTOMATION_BYPASS_SECRET }}
     steps:
       - name: Debug env (lengths only)
         run: |
