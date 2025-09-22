@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client/edge";
-import { withAccelerate } from "@prisma/extension-accelerate";
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient().$extends(withAccelerate());
+export const runtime = "nodejs";
+const prisma = new PrismaClient();
 
 function truncateToHourUTC(date: Date): Date {
   const d = new Date(date.toISOString()); // normalize to UTC

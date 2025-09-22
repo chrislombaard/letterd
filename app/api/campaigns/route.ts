@@ -1,7 +1,8 @@
-export const runtime = "edge";
+export const runtime = "nodejs";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import { CampaignCreate, CampaignSchedule } from "@/lib/validation";
 import z from "zod";
 

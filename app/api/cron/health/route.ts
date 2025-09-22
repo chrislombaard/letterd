@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 
-import { PrismaClient } from "@prisma/client/edge";
-import { withAccelerate } from "@prisma/extension-accelerate";
-
-const prisma = new PrismaClient().$extends(withAccelerate());
+export const runtime = "nodejs";
+const prisma = new PrismaClient();
 
 export async function GET() {
   const rows = await prisma.cronExecution.findMany({

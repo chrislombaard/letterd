@@ -16,7 +16,7 @@
     "test": "dotenv -e .env.test -- jest",
     "coverage": "jest --coverage",
     "test:watch": "jest --watch",
-    "postinstall": "PRISMA_CLIENT_ENGINE_TYPE=dataproxy prisma generate --no-engine"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
