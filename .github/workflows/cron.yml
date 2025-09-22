@@ -20,13 +20,19 @@ jobs:
       - name: Call /api/cron/tick (with Vercel bypass)
         run: |
           set -euo pipefail
+
           if [ -z "${ENDPOINT:-}" ] || [ -z "${CRON_SECRET:-}" ] || [ -z "${VERCEL_BYPASS_TOKEN:-}" ]; then
             echo "Missing ENDPOINT/CRON_SECRET/VERCEL_BYPASS_TOKEN"; exit 2
           fi
-          URL="${ENDPOINT}?secret=${CRON_SECRET}&x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${VERCEL_BYPASS_TOKEN}"
-          resp="$(curl -sS -w '\n%{http_code}' "$URL")"
+
+          URL="${ENDPOINT}?secret=${CRON_SECRET}"
+
+          # follow redirects with -L, send bypass header
+          resp="$(curl -sS -L -H "x-vercel-protection-bypass: ${VERCEL_BYPASS_TOKEN}" -w '\n%{http_code}' "$URL")"
           status="$(printf '%s' "$resp" | tail -n1)"
           body="$(printf '%s' "$resp" | sed '$d')"
+
           echo "Status: $status"
           echo "Body: $body"
           test "$status" -ge 200 -a "$status" -lt 300
+          echo "Success!"
