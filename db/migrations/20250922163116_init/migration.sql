@@ -52,6 +52,20 @@ CREATE TABLE "public"."CronExecution" (
     CONSTRAINT "CronExecution_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "public"."Task" (
+    "id" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "runAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "attempts" INTEGER NOT NULL DEFAULT 0,
+    "payload" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Subscriber_email_key" ON "public"."Subscriber"("email");
 
@@ -66,6 +80,9 @@ CREATE UNIQUE INDEX "Delivery_campaignId_subscriberId_key" ON "public"."Delivery
 
 -- CreateIndex
 CREATE UNIQUE INDEX "CronExecution_key_key" ON "public"."CronExecution"("key");
+
+-- CreateIndex
+CREATE INDEX "Task_status_runAt_idx" ON "public"."Task"("status", "runAt");
 
 -- AddForeignKey
 ALTER TABLE "public"."Delivery" ADD CONSTRAINT "Delivery_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "public"."Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;

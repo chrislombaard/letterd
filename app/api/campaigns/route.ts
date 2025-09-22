@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 import { NextRequest, NextResponse } from "next/server";
-import { CampaignCreate, CampaignSchedule } from "@/lib/validation";
+import { CampaignCreate } from "@/lib/validation";
 import z from "zod";
 
 export async function GET() {

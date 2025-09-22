@@ -1,13 +1,14 @@
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { runDueTasks } from "@/lib/task-runner";
 
-export const runtime = "nodejs";
 const prisma = new PrismaClient();
 
-function truncateToHourUTC(date: Date): Date {
-  const d = new Date(date.toISOString()); // normalize to UTC
-  d.setUTCMinutes(0, 0, 0);
-  return d;
+function truncateToHourUTC(date: Date) {
+  const truncated = new Date(date.toISOString());
+  truncated.setUTCMinutes(0, 0, 0);
+  return truncated;
 }
 
 export async function GET(req: NextRequest) {
@@ -21,28 +22,34 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // 2) Ensure its only run once per hour
-  const now = new Date();
-  const windowStart = truncateToHourUTC(now);
-  const key = `tick:${windowStart.toISOString()}`;
+  const key = `tick:${truncateToHourUTC(new Date()).toISOString()}`;
 
   try {
-    // Claim this window; if it already exists => skip
     await prisma.cronExecution.create({ data: { key } });
-  } catch (e: any) {
-    // Unique violation means we've already run this window
-    return NextResponse.json({ ok: true, skipped: true, window: key });
-  }
+  } catch (error: any) {
+    const msg = error?.message || "";
+    const code = error?.code;
+    const isUnique =
+      code === "P2002" || /Unique constraint failed|duplicate key/i.test(msg);
 
-  // 3) Do scheduled work (keep it fast; ideally < 5s)
-  try {
-    console.log(`[cron] ran window=${key}`);
-    return NextResponse.json({ ok: true, ran: true, window: key });
-  } catch (err) {
-    console.error("[cron] job_failed", err);
+    if (isUnique)
+      return NextResponse.json({ ok: true, skipped: true, window: key });
+
+    console.error("[cron] insert_failed", { code, msg });
     return NextResponse.json(
-      { ok: false, error: "job_failed" },
+      { ok: false, error: "insert_failed", code, msg },
       { status: 500 }
     );
   }
+
+  const res = await runDueTasks(25);
+
+  return NextResponse.json({
+    ok: true,
+    ran: true,
+    window: key,
+    processed: res.processed,
+    pending: res.pending,
+    failed: res.failed,
+  });
 }
