@@ -1,23 +1,44 @@
 name: Cron Tick
 on:
   schedule:
-    - cron: "0 * * * *"   # hourly, UTC
+    - cron: "0 * * * *" # hourly, UTC
   workflow_dispatch:
 
 jobs:
   tick:
     runs-on: ubuntu-latest
-    environment: production 
+    # uncomment if your secrets live in an environment
+    # environment: production
+    env:
+      ENDPOINT: ${{ secrets.CRON_ENDPOINT }} # e.g. https://your-app.vercel.app/api/cron/tick
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
     steps:
-      - name: Call /api/cron/tick
-        env:
-          ENDPOINT: ${{ secrets.CRON_ENDPOINT }}   # e.g. https://your-app.vercel.app/api/cron/tick
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}  # same as in Vercel env
+      - name: Debug env (lengths only)
+        run: |
+          echo "ENDPOINT len: ${#ENDPOINT}"
+          echo "CRON_SECRET len: ${#CRON_SECRET}"
+          echo "VERCEL_BYPASS_TOKEN len: ${#VERCEL_BYPASS_TOKEN}"
+
+      - name: Call /api/cron/tick (with Vercel bypass)
         run: |
           set -euo pipefail
-          resp=$(curl -sS -w "\n%{http_code}" "$ENDPOINT?secret=$CRON_SECRET")
-          status=$(echo "$resp" | tail -n1)
-          body=$(echo "$resp" | sed '$d')
+
+          if [ -z "${ENDPOINT:-}" ] || [ -z "${CRON_SECRET:-}" ] || [ -z "${VERCEL_BYPASS_TOKEN:-}" ]; then
+            echo "Missing ENDPOINT/CRON_SECRET/VERCEL_BYPASS_TOKEN"; exit 2
+          fi
+
+          # Build URL: original query + Vercel bypass params
+          if [[ "$ENDPOINT" == *\?* ]]; then
+            URL="${ENDPOINT}&secret=${CRON_SECRET}&x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${VERCEL_BYPASS_TOKEN}"
+          else
+            URL="${ENDPOINT}?secret=${CRON_SECRET}&x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${VERCEL_BYPASS_TOKEN}"
+          fi
+
+          resp="$(curl -sS -w '\n%{http_code}' "$URL")"
+          status="$(printf '%s' "$resp" | tail -n1)"
+          body="$(printf '%s' "$resp" | sed '$d')"
+
           echo "Status: $status"
           echo "Body: $body"
           test "$status" -ge 200 -a "$status" -lt 300
