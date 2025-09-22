@@ -66,3 +66,9 @@ model Delivery {
   @@unique([campaignId, subscriberId])
   @@index([status, createdAt])
 }
+
+model CronExecution {
+  id        Int       @id @default(autoincrement())
+  key       String    @unique // e.g. "tick:2025-09-22T13:00:00Z"
+  createdAt DateTime  @default(now())
+}

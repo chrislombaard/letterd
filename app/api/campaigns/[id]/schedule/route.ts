@@ -5,8 +5,10 @@ import z from "zod";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const params = await context.params;
+  const { id } = params;
   const json = await request.json();
   const parsed = CampaignSchedule.safeParse(json);
 
@@ -19,7 +21,7 @@ export async function POST(
   }
 
   const campaign = await prisma.campaign.update({
-    where: { id: params.id },
+    where: { id },
     data: { scheduledAt: parsed.data.scheduledAt, status: "SCHEDULED" },
     select: { id: true, status: true, scheduledAt: true },
   });
