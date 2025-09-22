@@ -1,14 +1,14 @@
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 type Body = {
-  type: string; 
-  payload?: unknown; 
-  runAt?: string | number; 
+  type: string;
+  payload?: unknown;
+  runAt?: string | number;
 };
 
 export async function POST(req: NextRequest) {
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
   }
 
   let runAt: Date | undefined = undefined;
-  
+
   if (body.runAt) {
     runAt = new Date(body.runAt);
 
@@ -45,7 +45,10 @@ export async function POST(req: NextRequest) {
   const task = await prisma.task.create({
     data: {
       type: body.type,
-      payload: body.payload ?? null,
+      payload:
+        body.payload === undefined
+          ? Prisma.DbNull 
+          : body.payload ?? Prisma.JsonNull, 
       runAt: runAt ?? new Date(),
     },
   });
@@ -55,7 +58,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
-  const status = url.searchParams.get("status"); 
+  const status = url.searchParams.get("status");
 
   const tasks = await prisma.task.findMany({
     where: status ? { status } : {},
