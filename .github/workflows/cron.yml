@@ -1,0 +1,22 @@
+name: Cron Tick
+on:
+  schedule:
+    - cron: "0 * * * *"   # hourly, UTC
+  workflow_dispatch:
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call /api/cron/tick
+        env:
+          ENDPOINT: ${{ secrets.CRON_ENDPOINT }}   # e.g. https://your-app.vercel.app/api/cron/tick
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}  # same as in Vercel env
+        run: |
+          set -euo pipefail
+          resp=$(curl -sS -w "\n%{http_code}" "$ENDPOINT?secret=$CRON_SECRET")
+          status=$(echo "$resp" | tail -n1)
+          body=$(echo "$resp" | sed '$d')
+          echo "Status: $status"
+          echo "Body: $body"
+          test "$status" -ge 200 -a "$status" -lt 300
