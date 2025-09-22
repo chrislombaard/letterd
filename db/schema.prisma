@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url       = env("DATABASE_URL")  // Accelerate at runtime
-  directUrl = env("DIRECT_URL")    // Raw Postgres for migrations
+  provider  = "postgresql"
+  url       = env("PRISMA_DATABASE_URL")  // ← use Accelerate here
+  directUrl = env("DIRECT_URL")           // ← raw Postgres for migrate
 }
 
 enum CampaignStatus {
@@ -72,4 +72,16 @@ model CronExecution {
   id        Int       @id @default(autoincrement())
   key       String    @unique // e.g. "tick:2025-09-22T13:00:00Z"
   createdAt DateTime  @default(now())
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  type      String
+  status    String   @default("pending") // pending|running|done|failed
+  runAt     DateTime @default(now())
+  attempts  Int      @default(0)
+  payload   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([status, runAt])
 }
