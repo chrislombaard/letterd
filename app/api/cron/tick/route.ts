@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { runDueTasks } from "@/lib/task-runner";
 import { tick as processScheduledPosts } from "@/app/(server)/worker/tick";
+import { ErrorHandler, AuthenticationError } from "@/lib/errors";
 
 const prisma = new PrismaClient();
 
@@ -17,9 +18,10 @@ export async function GET(req: NextRequest) {
   const secret = req.nextUrl.searchParams.get("secret");
 
   if (!isVercelCron && secret !== process.env.CRON_SECRET) {
+    const authError = new AuthenticationError("Unauthorized cron access");
     return NextResponse.json(
-      { ok: false, error: "unauthorized" },
-      { status: 401 }
+      { ok: false, error: authError.message, code: authError.code },
+      { status: authError.statusCode },
     );
   }
 
@@ -27,24 +29,25 @@ export async function GET(req: NextRequest) {
 
   try {
     await prisma.cronExecution.create({ data: { key } });
-  } catch (error: any) {
-    const msg = error?.message || "";
-    const code = error?.code;
-    const isUnique =
-      code === "P2002" || /Unique constraint failed|duplicate key/i.test(msg);
+  } catch (error: unknown) {
+    const dbError = ErrorHandler.handleDatabaseError(
+      error,
+      "Cron execution tracking",
+    );
 
-    if (isUnique)
+    if (dbError.message.includes("already exists")) {
       return NextResponse.json({ ok: true, skipped: true, window: key });
+    }
 
-    console.error("[cron] insert_failed", { code, msg });
+    console.error("[cron] insert_failed", ErrorHandler.toJSON(dbError));
     return NextResponse.json(
-      { ok: false, error: "insert_failed", code, msg },
-      { status: 500 }
+      { ok: false, error: dbError.message, code: dbError.code },
+      { status: dbError.statusCode },
     );
   }
 
   const publishedPosts = await processScheduledPosts();
-  
+
   const res = await runDueTasks(25);
 
   return NextResponse.json({

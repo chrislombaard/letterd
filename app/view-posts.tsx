@@ -3,8 +3,18 @@ import { Card, Title, Text, Stack, Loader, Paper, Group } from "@mantine/core";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+interface Post {
+  id: string;
+  title: string;
+  subject: string;
+  bodyHtml: string;
+  status: string;
+  scheduledAt: string | null;
+  createdAt: string;
+}
+
 export default function ViewPosts() {
-  const { data: posts, error } = useSWR("/api/posts", fetcher);
+  const { data: posts, error } = useSWR<Post[]>("/api/posts", fetcher);
 
   if (error)
     return (
@@ -21,7 +31,7 @@ export default function ViewPosts() {
       </Title>
       {posts.length === 0 && <Text>No posts yet.</Text>}
       <Stack>
-        {posts.map((post: any) => (
+        {posts.map((post) => (
           <Card key={post.id} shadow="sm" padding="lg" radius="md" withBorder>
             <Title order={3}>{post.title}</Title>
             <Group gap="md" mb="xs">

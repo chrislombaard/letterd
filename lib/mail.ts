@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { ErrorHandler } from './errors';
 
 interface MailService {
   send(input: {
@@ -35,27 +36,27 @@ export const mail: MailService = {
       console.log("[mail] Email sent successfully:", data?.id);
       return { ok: true };
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('[mail] Send error:', error);
       
-      if (error?.message?.includes('rate limit')) {
+      try {
+        const emailError = ErrorHandler.handleEmailError(error);
         return {
           ok: false,
-          error: 'Rate limit exceeded. Please wait a moment before sending again.',
+          error: emailError.message,
         };
-      }
-      
-      if (error?.message?.includes('Invalid API key')) {
+      } catch (specialError) {
+        if (specialError instanceof Error) {
+          return {
+            ok: false,
+            error: specialError.message,
+          };
+        }
         return {
           ok: false,
-          error: 'Invalid Resend API key. Please check your configuration.',
+          error: 'Failed to send email',
         };
       }
-      
-      return {
-        ok: false,
-        error: error?.message || 'Failed to send email',
-      };
     }
   },
 };
