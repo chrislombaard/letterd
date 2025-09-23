@@ -10,6 +10,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "setup-email": "node scripts/setup-email.js",
+    "test-middleware": "./scripts/test-middleware.sh",
     "prisma:gen": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
