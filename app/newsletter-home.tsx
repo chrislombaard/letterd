@@ -1,5 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
+import { Container, Title, Text, SimpleGrid, Stack, Group } from "@mantine/core";
+import { ThemeToggle } from "../components/theme-toggle";
 
 const NewsletterSignup = dynamic(() => import("./newsletter-signup"));
 const AuthorPost = dynamic(() => import("./author-post"));
@@ -7,19 +9,40 @@ const ViewPosts = dynamic(() => import("./view-posts"));
 
 export default function NewsletterHome() {
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: 24 }}>
-      <h1 style={{ textAlign: "center", marginBottom: 32 }}>Personal Newsletter</h1>
-      <div style={{ display: "flex", gap: 32, flexWrap: "wrap", justifyContent: "center" }}>
-        <div style={{ flex: 1, minWidth: 320 }}>
-          <NewsletterSignup />
-        </div>
-        <div style={{ flex: 2, minWidth: 320 }}>
-          <AuthorPost />
-        </div>
-      </div>
-      <div style={{ marginTop: 48 }}>
-        <ViewPosts />
-      </div>
-    </div>
+    <Container size="md" py={60}>
+      <Stack gap={60}>
+        <Group justify="space-between" align="flex-start">
+          <Stack gap="sm">
+            <Title size="2.5rem" fw={400}>
+              letterd
+            </Title>
+            <Text size="lg" c="dimmed" maw={500}>
+              Personal newsletter platform
+            </Text>
+          </Stack>
+          <ThemeToggle />
+        </Group>
+
+        <SimpleGrid 
+          cols={{ base: 1, md: 2 }} 
+          spacing={40}
+        >
+          <Stack gap="md">
+            <Title order={2} size="xl" fw={500}>Subscribe</Title>
+            <NewsletterSignup />
+          </Stack>
+          
+          <Stack gap="md">
+            <Title order={2} size="xl" fw={500}>Create</Title>
+            <AuthorPost />
+          </Stack>
+        </SimpleGrid>
+
+        <Stack gap="lg">
+          <Title order={2} size="xl" fw={500} ta="center">Posts</Title>
+          <ViewPosts />
+        </Stack>
+      </Stack>
+    </Container>
   );
 }

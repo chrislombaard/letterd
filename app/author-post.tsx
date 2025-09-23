@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { TextInput, Textarea, Button, Paper, Title, Stack } from "@mantine/core";
+import { 
+  TextInput, 
+  Textarea, 
+  Button, 
+  Stack,
+  Text
+} from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
 export default function AuthorPost() {
@@ -23,54 +29,79 @@ export default function AuthorPost() {
     setLoading(false);
 
     if (res.ok) {
-      notifications.show({ color: "green", title: "Post created!", message: "Your post has been created." });
+      notifications.show({ 
+        color: "green", 
+        title: "Post created", 
+        message: "Your newsletter post is ready"
+      });
       setTitle("");
       setSubject("");
       setBodyHtml("");
       setScheduledAt("");
     } else {
-      notifications.show({ color: "red", title: "Error", message: "Error creating post" });
+      notifications.show({ 
+        color: "red", 
+        title: "Error", 
+        message: "Failed to create post" 
+      });
     }
   }
 
   return (
-    <Paper shadow="md" p="lg" radius="md" withBorder style={{ maxWidth: 600, margin: "2rem auto" }}>
-      <form onSubmit={handleSubmit}>
-        <Stack>
-          <Title order={3}>Author New Post</Title>
-          <TextInput
-            label="Title"
-            placeholder="Title"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            required
-          />
-          <TextInput
-            label="Subject"
-            placeholder="Subject"
-            value={subject}
-            onChange={e => setSubject(e.target.value)}
-            required
-          />
-          <Textarea
-            label="Body (HTML allowed)"
-            placeholder="Body (HTML allowed)"
-            value={bodyHtml}
-            onChange={e => setBodyHtml(e.target.value)}
-            required
-            minRows={8}
-          />
-          <TextInput
-            type="datetime-local"
-            label="Schedule (optional)"
-            value={scheduledAt}
-            onChange={e => setScheduledAt(e.target.value)}
-          />
-          <Button type="submit" loading={loading} fullWidth>
-            Create Post
-          </Button>
-        </Stack>
-      </form>
-    </Paper>
+    <form onSubmit={handleSubmit}>
+      <Stack gap="md">
+        <Text size="sm" c="dimmed">
+          Create and schedule your newsletter post
+        </Text>
+        
+        <TextInput
+          id="post-title"
+          label="Title"
+          placeholder="Post title"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          required
+        />
+        
+        <TextInput
+          id="post-subject"
+          label="Email subject"
+          placeholder="Subject line for email"
+          value={subject}
+          onChange={e => setSubject(e.target.value)}
+          required
+        />
+        
+        <Textarea
+          id="post-body"
+          label="Content"
+          placeholder="Write your newsletter content..."
+          value={bodyHtml}
+          onChange={e => setBodyHtml(e.target.value)}
+          required
+          minRows={6}
+          maxRows={12}
+          autosize
+        />
+        
+        <TextInput
+          id="post-schedule"
+          type="datetime-local"
+          label="Schedule (optional)"
+          value={scheduledAt}
+          onChange={e => setScheduledAt(e.target.value)}
+        />
+
+        <Button 
+          type="submit" 
+          loading={loading}
+          fullWidth
+          color="dark"
+          variant="filled"
+        >
+          {loading ? "Creating..." : scheduledAt ? "Schedule" : "Publish"}
+        </Button>
+      </Stack>
+    </form>
   );
 }

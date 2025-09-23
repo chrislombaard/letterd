@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { TextInput, Button, Paper, Title, Stack } from "@mantine/core";
+import { 
+  TextInput, 
+  Button, 
+  Stack, 
+  Text
+} from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
 export default function NewsletterSignup() {
@@ -21,32 +26,54 @@ export default function NewsletterSignup() {
     setLoading(false);
     
     if (res.ok) {
-      notifications.show({ color: "green", title: "Subscribed!", message: "You have been added to the newsletter." });
+      notifications.show({ 
+        color: "green", 
+        title: "Subscribed", 
+        message: "You're now subscribed to the newsletter"
+      });
       setEmail("");
     } else {
       const data = await res.json();
-      notifications.show({ color: "red", title: "Error", message: data.error || "Error subscribing" });
+      notifications.show({ 
+        color: "red", 
+        title: "Error", 
+        message: data.error || "Please try again" 
+      });
     }
   }
 
   return (
-    <Paper shadow="md" p="lg" radius="md" withBorder style={{ maxWidth: 400, margin: "2rem auto" }}>
-      <form onSubmit={handleSubmit}>
-        <Stack>
-          <Title order={3}>Sign Up for the Newsletter</Title>
-          <TextInput
-            type="email"
-            label="Email"
-            placeholder="Your email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-          />
-          <Button type="submit" loading={loading} fullWidth>
-            Subscribe
-          </Button>
-        </Stack>
-      </form>
-    </Paper>
+    <form onSubmit={handleSubmit}>
+      <Stack gap="md">
+        <Text size="sm" c="dimmed">
+          Get updates delivered to your inbox
+        </Text>
+        
+        <TextInput
+          id="newsletter-email"
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          size="md"
+        />
+        
+        <Button 
+          type="submit" 
+          loading={loading} 
+          fullWidth
+          size="md"
+          color="dark"
+          variant="filled"
+        >
+          Subscribe
+        </Button>
+        
+        <Text size="xs" c="dimmed">
+          No spam, unsubscribe anytime
+        </Text>
+      </Stack>
+    </form>
   );
 }
