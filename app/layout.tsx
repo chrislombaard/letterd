@@ -68,10 +68,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <ColorSchemeScript />
+        <ColorSchemeScript defaultColorScheme="light" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased page-content`}>
-        <MantineProvider theme={theme}>
+        <MantineProvider theme={theme} defaultColorScheme="light">
           <Notifications 
             position="top-right" 
             containerWidth={400}

@@ -9,7 +9,13 @@ interface MailService {
   }): Promise<{ ok: boolean; error?: string }>;
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY environment variable is not set');
+  }
+  return new Resend(apiKey);
+}
 
 export const mail: MailService = {
   async send(input) {
@@ -21,6 +27,7 @@ export const mail: MailService = {
         return { ok: true };
       }
 
+      const resend = getResendClient();
       const { data, error } = await resend.emails.send({
         from: process.env.FROM_EMAIL || 'newsletter@yourdomain.com',
         to: [input.to],
