@@ -6,9 +6,8 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    // quick query — just return number of campaigns
-    const count = await prisma.campaign.count();
-    return NextResponse.json({ ok: true, campaigns: count });
+    const count = await prisma.post.count();
+    return NextResponse.json({ ok: true, posts: count });
   } catch (err: any) {
     return NextResponse.json(
       { ok: false, error: err.message },

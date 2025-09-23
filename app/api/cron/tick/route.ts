@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { runDueTasks } from "@/lib/task-runner";
+import { tick as processScheduledPosts } from "@/app/(server)/worker/tick";
 
 const prisma = new PrismaClient();
 
@@ -42,12 +43,15 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  const publishedPosts = await processScheduledPosts();
+  
   const res = await runDueTasks(25);
 
   return NextResponse.json({
     ok: true,
     ran: true,
     window: key,
+    publishedPosts,
     processed: res.processed,
     pending: res.pending,
     failed: res.failed,

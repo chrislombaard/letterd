@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "public"."CampaignStatus" AS ENUM ('DRAFT', 'SCHEDULED', 'SENDING', 'SENT');
+CREATE TYPE "public"."PostStatus" AS ENUM ('DRAFT', 'SCHEDULED', 'SENDING', 'SENT');
 
 -- CreateEnum
 CREATE TYPE "public"."SubscriberStatus" AS ENUM ('ACTIVE', 'UNSUBSCRIBED', 'BOUNCED');
@@ -18,22 +18,22 @@ CREATE TABLE "public"."Subscriber" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Campaign" (
+CREATE TABLE "public"."Post" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
     "subject" TEXT NOT NULL,
     "bodyHtml" TEXT NOT NULL,
-    "status" "public"."CampaignStatus" NOT NULL DEFAULT 'DRAFT',
+    "status" "public"."PostStatus" NOT NULL DEFAULT 'DRAFT',
     "scheduledAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Campaign_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "public"."Delivery" (
     "id" TEXT NOT NULL,
-    "campaignId" TEXT NOT NULL,
+    "postId" TEXT NOT NULL,
     "subscriberId" TEXT NOT NULL,
     "status" "public"."DeliveryStatus" NOT NULL DEFAULT 'PENDING',
     "error" TEXT,
@@ -70,13 +70,13 @@ CREATE TABLE "public"."Task" (
 CREATE UNIQUE INDEX "Subscriber_email_key" ON "public"."Subscriber"("email");
 
 -- CreateIndex
-CREATE INDEX "Campaign_status_scheduledAt_idx" ON "public"."Campaign"("status", "scheduledAt");
+CREATE INDEX "Post_status_scheduledAt_idx" ON "public"."Post"("status", "scheduledAt");
 
 -- CreateIndex
 CREATE INDEX "Delivery_status_createdAt_idx" ON "public"."Delivery"("status", "createdAt");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Delivery_campaignId_subscriberId_key" ON "public"."Delivery"("campaignId", "subscriberId");
+CREATE UNIQUE INDEX "Delivery_postId_subscriberId_key" ON "public"."Delivery"("postId", "subscriberId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "CronExecution_key_key" ON "public"."CronExecution"("key");
@@ -85,7 +85,7 @@ CREATE UNIQUE INDEX "CronExecution_key_key" ON "public"."CronExecution"("key");
 CREATE INDEX "Task_status_runAt_idx" ON "public"."Task"("status", "runAt");
 
 -- AddForeignKey
-ALTER TABLE "public"."Delivery" ADD CONSTRAINT "Delivery_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "public"."Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."Delivery" ADD CONSTRAINT "Delivery_postId_fkey" FOREIGN KEY ("postId") REFERENCES "public"."Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."Delivery" ADD CONSTRAINT "Delivery_subscriberId_fkey" FOREIGN KEY ("subscriberId") REFERENCES "public"."Subscriber"("id") ON DELETE CASCADE ON UPDATE CASCADE;

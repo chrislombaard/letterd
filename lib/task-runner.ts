@@ -1,5 +1,6 @@
 import { PrismaClient, Task } from "@prisma/client";
 import { JsonValue } from "@prisma/client/runtime/library";
+import { mail } from "./mail";
 
 type TaskType = Pick<Task, "id" | "type" | "attempts" | "payload"> & {
   payload: JsonValue | null;
@@ -12,7 +13,28 @@ const handlers: Record<string, (task: TaskType) => Promise<void>> = {
     console.log("[task] cleanup", task.id, task.payload);
   },
   "email.send": async (task) => {
-    console.log("[task] email.send", task.id, task.payload);
+    if (!task.payload || typeof task.payload !== "object") return;
+    const { deliveryId, to, subject, html } = task.payload as any;
+    try {
+      const result = await mail.send({ to, subject, html });
+      if (result.ok) {
+        await prisma.delivery.update({
+          where: { id: deliveryId },
+          data: { status: "SENT", sentAt: new Date(), error: null },
+        });
+      } else {
+        await prisma.delivery.update({
+          where: { id: deliveryId },
+          data: { status: "FAILED", error: result.error || "Unknown error" },
+        });
+      }
+    } catch (err: any) {
+      await prisma.delivery.update({
+        where: { id: deliveryId },
+        data: { status: "FAILED", error: err?.message || "Send error" },
+      });
+      throw err;
+    }
   },
   "demo.fail": async (task) => {
     console.log("[task] failing intentionally", task.id);

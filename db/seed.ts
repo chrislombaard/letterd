@@ -1,27 +1,27 @@
-import { PrismaClient, Prisma, CampaignStatus } from "@prisma/client";
+import { PrismaClient, Prisma, PostStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const campaignData = [
+const postData = [
   {
-    name: "Welcome Campaign",
+    title: "Welcome Post",
     subject: "Welcome to our newsletter!",
     bodyHtml: "<h1>Hello Laura!</h1>",
-    status: CampaignStatus.SENT,
+    status: PostStatus.SENT,
     scheduledAt: new Date(),
   },
   {
-    name: "Promo Campaign",
+    title: "Promo Post",
     subject: "Special Offer!",
     bodyHtml: "<h1>Don't miss out!</h1>",
-    status: CampaignStatus.SENT,
+    status: PostStatus.SENT,
     scheduledAt: new Date(),
   },
 ];
 
 export async function main() {
-  const [welcomeCampaign, promoCampaign] = await Promise.all(
-    campaignData.map((campaign) => prisma.campaign.create({ data: campaign }))
+  const [welcomePost, promoPost] = await Promise.all(
+    postData.map((post) => prisma.post.create({ data: post }))
   );
 
   const subscriberData: Prisma.SubscriberCreateInput[] = [
@@ -32,7 +32,7 @@ export async function main() {
         create: [
           {
             status: "SENT",
-            campaign: { connect: { id: welcomeCampaign.id } },
+            post: { connect: { id: welcomePost.id } },
             sentAt: new Date(),
           },
         ],
@@ -46,7 +46,7 @@ export async function main() {
           {
             status: "FAILED",
             error: "Email bounced",
-            campaign: { connect: { id: promoCampaign.id } },
+            post: { connect: { id: promoPost.id } },
           },
         ],
       },

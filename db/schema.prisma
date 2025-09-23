@@ -8,7 +8,7 @@ datasource db {
   directUrl = env("DIRECT_URL")           // ← raw Postgres for migrate
 }
 
-enum CampaignStatus {
+enum PostStatus {
   DRAFT
   SCHEDULED
   SENDING
@@ -38,14 +38,14 @@ model Subscriber {
 }
 
 
-model Campaign {
-  id          String         @id @default(cuid())
-  name        String
+model Post {
+  id          String     @id @default(cuid())
+  title       String
   subject     String
   bodyHtml    String
-  status      CampaignStatus @default(DRAFT)
+  status      PostStatus @default(DRAFT)
   scheduledAt DateTime?
-  createdAt   DateTime       @default(now())
+  createdAt   DateTime   @default(now())
 
   deliveries  Delivery[]
 
@@ -54,17 +54,17 @@ model Campaign {
 
 model Delivery {
   id           String         @id @default(cuid())
-  campaignId   String
+  postId       String
   subscriberId String
   status       DeliveryStatus @default(PENDING)
   error        String?
   createdAt    DateTime       @default(now())
   sentAt       DateTime?
 
-  campaign     Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  post         Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
   subscriber   Subscriber     @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
 
-  @@unique([campaignId, subscriberId])
+  @@unique([postId, subscriberId])
   @@index([status, createdAt])
 }
 
