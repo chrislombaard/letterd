@@ -1,24 +1,76 @@
 import { prisma } from "@/lib/db";
+import { generateNewsletterEmail } from "@/lib/email-template";
+import type { Post, Subscriber } from "@prisma/client";
 
-export async function tick() {
-  // Find all campaigns that are scheduled and due
-  const dueCampaigns = await prisma.campaign.findMany({
-    where: {
-      status: "SCHEDULED",
-      scheduledAt: { lte: new Date() },
-    },
+async function processPost(post: Post, subscribers: Subscriber[]) {
+  await prisma.post.update({
+    where: { id: post.id },
+    data: { status: "SENT" },
   });
 
-  for (const campaign of dueCampaigns) {
-    // Mark as SENT 
-    await prisma.campaign.update({
-      where: { id: campaign.id },
-      data: { status: "SENT" },
+  const deliveryPromises = subscribers.map(async (subscriber) => {
+    const delivery = await prisma.delivery.create({
+      data: {
+        postId: post.id,
+        subscriberId: subscriber.id,
+        status: "PENDING",
+      },
     });
-    // Optionally: trigger delivery creation or email sending here
+
+    const emailHtml = generateNewsletterEmail({
+      title: post.title,
+      subject: post.subject,
+      bodyHtml: post.bodyHtml,
+      subscriberEmail: subscriber.email,
+      unsubscribeUrl: `${process.env.NEXT_PUBLIC_APP_URL}/unsubscribe?token=${subscriber.id}`,
+    });
+
+    return prisma.task.create({
+      data: {
+        type: "email.send",
+        payload: {
+          deliveryId: delivery.id,
+          to: subscriber.email,
+          subject: post.subject,
+          html: emailHtml,
+        },
+      },
+    });
+  });
+
+  await Promise.all(deliveryPromises);
+}
+
+export async function tick() {
+  const [duePosts, activeSubscribers] = await Promise.all([
+    prisma.post.findMany({
+      where: {
+        status: "SCHEDULED",
+        scheduledAt: { lte: new Date() },
+      },
+    }),
+    prisma.subscriber.findMany({
+      where: { status: "ACTIVE" },
+    }),
+  ]);
+
+  if (duePosts.length === 0) {
+    return { processed: 0, message: "No scheduled posts due" };
   }
 
-  return { processed: dueCampaigns.length };
+  if (activeSubscribers.length === 0) {
+    return { processed: 0, message: "No active subscribers" };
+  }
+
+  await Promise.all(
+    duePosts.map((post) => processPost(post, activeSubscribers)),
+  );
+
+  return {
+    processed: duePosts.length,
+    subscribersNotified: activeSubscribers.length,
+    totalEmailsQueued: duePosts.length * activeSubscribers.length,
+  };
 }
 
 if (require.main === module) {

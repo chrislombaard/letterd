@@ -4,35 +4,60 @@ on:
     - cron: "0 * * * *" # hourly, UTC
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: cron-tick
+  cancel-in-progress: false
+
 jobs:
   tick:
+    name: Hit /api/cron/tick
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     env:
-      ENDPOINT: ${{ vars.CRON_ENDPOINT }}
-      CRON_SECRET: ${{ vars.CRON_SECRET }}
-      VERCEL_BYPASS_TOKEN: ${{ vars.VERCEL_AUTOMATION_BYPASS_SECRET }}
+      ENDPOINT: ${{ secrets.CRON_ENDPOINT }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
     steps:
-      - name: Debug env (lengths only)
-        run: |
-          echo "ENDPOINT len: ${#ENDPOINT}"
-          echo "CRON_SECRET len: ${#CRON_SECRET}"
-          echo "VERCEL_BYPASS_TOKEN len: ${#VERCEL_BYPASS_TOKEN}"
-      - name: Call /api/cron/tick (with Vercel bypass)
+      - name: Call endpoint
         run: |
           set -euo pipefail
 
-          if [ -z "${ENDPOINT:-}" ] || [ -z "${CRON_SECRET:-}" ] || [ -z "${VERCEL_BYPASS_TOKEN:-}" ]; then
+          if [[ -z "${ENDPOINT:-}" || -z "${CRON_SECRET:-}" || -z "${VERCEL_BYPASS_TOKEN:-}" ]]; then
             echo "Missing ENDPOINT/CRON_SECRET/VERCEL_BYPASS_TOKEN"; exit 2
           fi
 
-          URL="${ENDPOINT}?secret=${CRON_SECRET}"
+          # Build URL (handles endpoints that may already include a query string)
+          if [[ "$ENDPOINT" == *\?* ]]; then
+            URL="${ENDPOINT}&secret=${CRON_SECRET}"
+          else
+            URL="${ENDPOINT}?secret=${CRON_SECRET}"
+          fi
 
-          # follow redirects with -L, send bypass header
-          resp="$(curl -sS -L -H "x-vercel-protection-bypass: ${VERCEL_BYPASS_TOKEN}" -w '\n%{http_code}' "$URL")"
-          status="$(printf '%s' "$resp" | tail -n1)"
-          body="$(printf '%s' "$resp" | sed '$d')"
+          attempt=0
+          until [[ $attempt -ge 3 ]]; do
+            attempt=$((attempt+1))
 
-          echo "Status: $status"
+            resp="$(curl -sS -L \
+              -H "x-vercel-protection-bypass: ${VERCEL_BYPASS_TOKEN}" \
+              --max-time 20 \
+              -w '\n%{http_code}' \
+              "$URL" || true)"
+
+            status="$(printf '%s' "$resp" | tail -n1)"
+            body="$(printf  '%s' "$resp" | sed '$d')"
+
+            if [[ "$status" -ge 200 && "$status" -lt 300 ]]; then
+              echo "Status: $status"
+              echo "Body: $body"
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "Non-2xx after $attempt attempts: $status"
           echo "Body: $body"
-          test "$status" -ge 200 -a "$status" -lt 300
-          echo "Success!"
+          exit 1
