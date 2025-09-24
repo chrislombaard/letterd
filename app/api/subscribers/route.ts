@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient, SubscriberStatus } from "@prisma/client";
-import { z } from "zod";
+import { SubscriberCreate } from "@/lib/validation";
 
 const prisma = new PrismaClient();
-
-const SubscriberCreate = z.object({
-  email: z.string().email("Invalid email format"),
-});
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
@@ -26,9 +22,11 @@ export async function POST(req: NextRequest) {
         status: SubscriberStatus.ACTIVE,
       },
     });
+    
     return NextResponse.json(subscriber, { status: 201 });
   } catch (e: unknown) {
     const error = e as { code?: string };
+
     if (error.code === "P2002") {
       return NextResponse.json(
         { error: "Email already subscribed" },

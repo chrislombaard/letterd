@@ -125,14 +125,119 @@ This script will:
 - Create database if needed
 - Run initial migrations and seeding
 
-### Reviewer Health Check
+## 🧪 Testing & Validation
 
-Run a complete health check and feature demo:
+### Comprehensive Test Suite
+
+Run all tests to validate functionality:
 ```bash
+# Frontend component tests (30 tests)
+npm test
+
+# Reviewer health check
 node scripts/reviewer-guide.js
 ```
 
-This will verify environment, run tests, and provide a guided tour of features.
+### Manual API Testing
+
+Test key endpoints with curl commands:
+
+#### 1. Create a Newsletter
+```bash
+# Immediate publish
+curl -X POST http://localhost:3000/api/posts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Welcome Newsletter",
+    "subject": "Welcome to our Newsletter!",
+    "bodyHtml": "<h1>Hello!</h1><p>Welcome to our newsletter platform.</p>",
+    "publishNow": true
+  }'
+
+# Scheduled publish (2 hours from now)
+curl -X POST http://localhost:3000/api/posts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Scheduled Newsletter", 
+    "subject": "Coming Soon!",
+    "bodyHtml": "<p>This newsletter is scheduled for delivery.</p>",
+    "scheduledAt": "'$(date -u -v+2H +%Y-%m-%dT%H:%M:%SZ)'"
+  }'
+```
+
+#### 2. Add Subscribers
+```bash
+curl -X POST http://localhost:3000/api/subscribers \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@example.com"}'
+```
+
+#### 3. View Published Posts
+```bash
+curl http://localhost:3000/api/posts | jq '.'
+```
+
+#### 4. Trigger Cron Processing
+```bash
+curl "http://localhost:3000/api/cron/tick?secret=YOUR_CRON_SECRET"
+```
+
+#### 5. Health Check
+```bash
+curl http://localhost:3000/api/health | jq '.'
+```
+
+#### 6. Admin Dashboard (requires auth)
+```bash
+curl -u admin:your_password http://localhost:3000/api/admin/dashboard | jq '.'
+```
+
+### Production Deployment Testing
+
+For Vercel/production environments:
+
+#### Environment Variables Required
+```bash
+DATABASE_URL=your_production_database_url
+DIRECT_URL=your_production_direct_url  
+CRON_SECRET=secure_random_secret
+ADMIN_USER=admin
+ADMIN_PASS=secure_password
+FROM_EMAIL=onboarding@resend.dev
+# RESEND_API_KEY=your_key_for_real_emails (optional)
+```
+
+#### Production Validation Commands
+```bash
+# Test production health
+curl https://your-app.vercel.app/api/health
+
+# Test newsletter creation
+curl -X POST https://your-app.vercel.app/api/posts \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Prod Test","subject":"Test","bodyHtml":"<p>Test</p>","publishNow":true}'
+
+# Test cron with secret
+curl "https://your-app.vercel.app/api/cron/tick?secret=YOUR_PRODUCTION_SECRET"
+
+# Test admin dashboard
+curl -u admin:password https://your-app.vercel.app/api/admin/dashboard
+```
+
+### Expected Test Results
+
+**✅ Success Indicators:**
+- 30 frontend tests pass
+- API endpoints return proper JSON responses
+- Cron processing shows tasks completed
+- Email logs appear in console
+- Real-time UI updates work after publishing
+- Database records created properly
+
+**⚠️ Known Issues:**
+- API route tests skip due to Jest/Next.js 15 compatibility
+- Admin dashboard needs credentials configured
+- Email service requires domain verification for production
 
 ## Project Structure
 
@@ -433,7 +538,3 @@ curl -X POST http://localhost:3000/api/test-email \
 **Custom Background Processing**: Built a simple cron-based system instead of using external queue services to keep infrastructure minimal while maintaining full control.
 
 **Resend for Email**: Developer-friendly API with good deliverability rates and reasonable pricing.
-
-## License
-
-MIT
