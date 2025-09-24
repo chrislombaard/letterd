@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { generateNewsletterEmail } from "@/lib/email-template";
 import type { Post, Subscriber } from "@prisma/client";
 
-async function processPost(post: Post, subscribers: Subscriber[]) {
+export async function processPost(post: Post, subscribers: Subscriber[]) {
   await prisma.post.update({
     where: { id: post.id },
     data: { status: "SENT" },

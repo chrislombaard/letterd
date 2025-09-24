@@ -1,4 +1,5 @@
-import useSWR from "swr";
+import React from "react";
+import useSWR, { mutate } from "swr";
 import { 
   Title, 
   Text, 
@@ -20,6 +21,8 @@ interface Post {
   scheduledAt: string | null;
   createdAt: string;
 }
+
+export const refreshPosts = () => mutate("/api/posts");
 
 export default function ViewPosts() {
   const { data: posts, error } = useSWR<Post[]>("/api/posts", fetcher);

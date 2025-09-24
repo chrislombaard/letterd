@@ -19,8 +19,20 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json(
       { ok: false, error: parsed.error.issues },
-      { status: 400 }
+      { status: 400 },
     );
+  }
+
+  let status: PostStatus;
+  let scheduledAt: Date | null = null;
+
+  if (parsed.data.publishNow) {
+    status = PostStatus.SENT;
+  } else if (parsed.data.scheduledAt) {
+    status = PostStatus.SCHEDULED;
+    scheduledAt = new Date(parsed.data.scheduledAt);
+  } else {
+    status = PostStatus.DRAFT;
   }
 
   const post = await prisma.post.create({
@@ -28,9 +40,42 @@ export async function POST(req: NextRequest) {
       title: parsed.data.title,
       subject: parsed.data.subject,
       bodyHtml: parsed.data.bodyHtml,
-      status: data.scheduledAt ? PostStatus.SCHEDULED : PostStatus.DRAFT,
-      scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
+      status,
+      scheduledAt,
     },
   });
+
+  if (parsed.data.publishNow) {
+    try {
+      const { processPost } = await import("@/app/(server)/worker/tick");
+
+      const subscribers = await prisma.subscriber.findMany({
+        where: { status: "ACTIVE" },
+      });
+
+      await processPost(post, subscribers);
+
+      return NextResponse.json(
+        {
+          ...post,
+          publishedImmediately: true,
+          subscribersCount: subscribers.length,
+        },
+        { status: 201 },
+      );
+    } catch (error) {
+      console.error("Failed to publish post immediately:", error);
+      await prisma.post.update({
+        where: { id: post.id },
+        data: { status: PostStatus.DRAFT },
+      });
+
+      return NextResponse.json(
+        { ok: false, error: "Failed to publish immediately" },
+        { status: 500 },
+      );
+    }
+  }
+
   return NextResponse.json(post, { status: 201 });
 }

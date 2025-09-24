@@ -71,7 +71,7 @@ describe('AuthorPost', () => {
         title: 'Test Newsletter',
         subject: 'Test Subject',
         bodyHtml: 'This is test content',
-        scheduledAt: '',
+        publishNow: true,
       }),
     });
   });

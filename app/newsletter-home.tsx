@@ -1,6 +1,14 @@
 "use client";
+import React from "react";
 import dynamic from "next/dynamic";
-import { Container, Title, Text, SimpleGrid, Stack, Group } from "@mantine/core";
+import {
+  Container,
+  Title,
+  Text,
+  SimpleGrid,
+  Stack,
+  Group,
+} from "@mantine/core";
 import { ThemeToggle } from "../components/theme-toggle";
 
 const NewsletterSignup = dynamic(() => import("./newsletter-signup"));
@@ -23,23 +31,26 @@ export default function NewsletterHome() {
           <ThemeToggle />
         </Group>
 
-        <SimpleGrid 
-          cols={{ base: 1, md: 2 }} 
-          spacing={40}
-        >
+        <SimpleGrid cols={{ base: 1, md: 2 }} spacing={40}>
           <Stack gap="md">
-            <Title order={2} size="xl" fw={500}>Subscribe</Title>
+            <Title order={2} size="xl" fw={500}>
+              Subscribe
+            </Title>
             <NewsletterSignup />
           </Stack>
-          
+
           <Stack gap="md">
-            <Title order={2} size="xl" fw={500}>Create</Title>
+            <Title order={2} size="xl" fw={500}>
+              Create
+            </Title>
             <AuthorPost />
           </Stack>
         </SimpleGrid>
 
         <Stack gap="lg">
-          <Title order={2} size="xl" fw={500} ta="center">Posts</Title>
+          <Title order={2} size="xl" fw={500} ta="center">
+            Posts
+          </Title>
           <ViewPosts />
         </Stack>
       </Stack>
