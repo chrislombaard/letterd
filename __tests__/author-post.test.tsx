@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MantineProvider } from '@mantine/core';
@@ -26,7 +27,7 @@ describe('AuthorPost', () => {
   it('renders the author post form', () => {
     renderWithProvider(<AuthorPost />);
     
-    expect(screen.getByText('Create and schedule your newsletter post')).toBeInTheDocument();
+    expect(screen.getByText(/Create and schedule your newsletter post/)).toBeInTheDocument();
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email subject/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/content/i)).toBeInTheDocument();

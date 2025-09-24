@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { TextInput, Textarea, Button, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { refreshPosts } from "./view-posts";
+import { refreshScheduledPosts } from "./view-scheduled-posts";
 
 export default function AuthorPost() {
   const [title, setTitle] = useState("");
@@ -32,8 +33,11 @@ export default function AuthorPost() {
 
     if (res.ok) {
       const result = await res.json();
+      const subscriberCount = result.subscribersCount || 0;
+      const subscriberText =
+        subscriberCount === 1 ? "subscriber" : "subscribers";
       const message = result.publishedImmediately
-        ? `Published immediately to ${result.subscribersCount} subscribers!`
+        ? `Published immediately to ${subscriberCount} ${subscriberText}!`
         : scheduledAt
           ? "Post scheduled successfully"
           : "Post saved as draft";
@@ -44,7 +48,11 @@ export default function AuthorPost() {
         message,
       });
 
-      if (result.publishedImmediately) refreshPosts();
+      if (result.publishedImmediately) {
+        refreshPosts();
+      } else if (scheduledAt) {
+        refreshScheduledPosts();
+      }
 
       setTitle("");
       setSubject("");
@@ -63,7 +71,7 @@ export default function AuthorPost() {
     <form onSubmit={handleSubmit}>
       <Stack gap="md">
         <Text size="sm" c="dimmed">
-          Create and schedule your newsletter post
+          Create and schedule your newsletter post. Scheduled posts appear in the &ldquo;Scheduled&rdquo; section below.
         </Text>
 
         <TextInput

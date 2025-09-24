@@ -14,6 +14,7 @@ import { ThemeToggle } from "../components/theme-toggle";
 const NewsletterSignup = dynamic(() => import("./newsletter-signup"));
 const AuthorPost = dynamic(() => import("./author-post"));
 const ViewPosts = dynamic(() => import("./view-posts"));
+const ViewScheduledPosts = dynamic(() => import("./view-scheduled-posts"));
 
 export default function NewsletterHome() {
   return (
@@ -52,6 +53,13 @@ export default function NewsletterHome() {
             Posts
           </Title>
           <ViewPosts />
+        </Stack>
+
+        <Stack gap="lg">
+          <Title order={2} size="xl" fw={500} ta="center">
+            Scheduled Posts
+          </Title>
+          <ViewScheduledPosts />
         </Stack>
       </Stack>
     </Container>
