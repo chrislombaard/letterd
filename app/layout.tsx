@@ -66,9 +66,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-mantine-color-scheme="light" suppressHydrationWarning>
       <head>
-        <ColorSchemeScript defaultColorScheme="light" />
+        <ColorSchemeScript 
+          defaultColorScheme="light" 
+          localStorageKey="mantine-color-scheme" 
+        />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased page-content`}>
         <MantineProvider theme={theme} defaultColorScheme="light">
