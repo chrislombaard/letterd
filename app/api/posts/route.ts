@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       title: parsed.data.title,
       subject: parsed.data.subject,
       bodyHtml: parsed.data.bodyHtml,
-      status: PostStatus.DRAFT,
+      status: data.scheduledAt ? PostStatus.SCHEDULED : PostStatus.DRAFT,
       scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
     },
   });
