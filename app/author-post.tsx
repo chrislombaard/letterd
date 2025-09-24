@@ -43,7 +43,7 @@ export default function AuthorPost() {
           : "Post saved as draft";
 
       notifications.show({
-        color: "green",
+        color: "gray",
         title: "Success",
         message,
       });
@@ -60,7 +60,7 @@ export default function AuthorPost() {
       setScheduledAt("");
     } else {
       notifications.show({
-        color: "red",
+        color: "gray",
         title: "Error",
         message: "Failed to create post",
       });
@@ -69,57 +69,110 @@ export default function AuthorPost() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Stack gap="md">
-        <Text size="sm" c="dimmed">
-          Create and schedule your newsletter post. Scheduled posts appear in the &ldquo;Scheduled&rdquo; section below.
-        </Text>
+      <Stack gap="lg">
+        <Stack gap="xs">
+          <Text size="md" c="dimmed">
+            Write and publish your newsletter
+          </Text>
+          <Text size="sm" c="dimmed">
+            Scheduled posts will be sent automatically at the specified time
+          </Text>
+        </Stack>
 
-        <TextInput
-          id="post-title"
-          label="Title"
-          placeholder="Post title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
+        <Stack gap="md">
+          <TextInput
+            id="post-title"
+            label="Title"
+            placeholder="Newsletter title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            size="md"
+            radius="md"
+            styles={{
+              input: {
+                border: '2px solid #e9ecef',
+                '&:focus': {
+                  borderColor: 'black',
+                },
+              },
+            }}
+          />
 
-        <TextInput
-          id="post-subject"
-          label="Email subject"
-          placeholder="Subject line for email"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          required
-        />
+          <TextInput
+            id="post-subject"
+            label="Email Subject"
+            placeholder="What readers see in their inbox"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            required
+            size="md"
+            radius="md"
+            styles={{
+              input: {
+                border: '2px solid #e9ecef',
+                '&:focus': {
+                  borderColor: 'black',
+                },
+              },
+            }}
+          />
 
-        <Textarea
-          id="post-body"
-          label="Content"
-          placeholder="Write your newsletter content..."
-          value={bodyHtml}
-          onChange={(e) => setBodyHtml(e.target.value)}
-          required
-          minRows={6}
-          maxRows={12}
-          autosize
-        />
+          <Textarea
+            id="post-body"
+            label="Content"
+            placeholder="Write your newsletter content here... You can use HTML tags like <h1>, <p>, <strong>, etc."
+            value={bodyHtml}
+            onChange={(e) => setBodyHtml(e.target.value)}
+            required
+            minRows={4}
+            maxRows={8}
+            autosize
+            size="md"
+            radius="md"
+            styles={{
+              input: {
+                border: '2px solid #e9ecef',
+                '&:focus': {
+                  borderColor: 'black',
+                },
+              },
+            }}
+          />
 
-        <TextInput
-          id="post-schedule"
-          type="datetime-local"
-          label="Schedule (optional)"
-          value={scheduledAt}
-          onChange={(e) => setScheduledAt(e.target.value)}
-        />
+          <TextInput
+            id="post-schedule"
+            type="datetime-local"
+            label="Schedule for Later (Optional)"
+            placeholder="Leave empty to publish immediately"
+            value={scheduledAt}
+            onChange={(e) => setScheduledAt(e.target.value)}
+            size="md"
+            radius="md"
+            styles={{
+              input: {
+                border: '2px solid #e9ecef',
+                '&:focus': {
+                  borderColor: 'black',
+                },
+              },
+            }}
+          />
+        </Stack>
 
         <Button
           type="submit"
           loading={loading}
           fullWidth
+          size="lg"
+          radius="md"
           color="dark"
           variant="filled"
+          style={{
+            backgroundColor: 'black',
+          }}
         >
-          {loading ? "Creating..." : scheduledAt ? "Schedule" : "Publish"}
+          {loading ? "Publishing..." : scheduledAt ? "Schedule Post" : "Publish Now"}
         </Button>
       </Stack>
     </form>

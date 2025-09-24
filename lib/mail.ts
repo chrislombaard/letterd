@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import sgMail from '@sendgrid/mail';
 import { ErrorHandler } from './errors';
 
 interface MailService {
@@ -9,59 +9,41 @@ interface MailService {
   }): Promise<{ ok: boolean; error?: string }>;
 }
 
-function getResendClient() {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    throw new Error('RESEND_API_KEY environment variable is not set');
-  }
-  return new Resend(apiKey);
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
 export const mail: MailService = {
   async send(input) {
     try {
-      if (!process.env.RESEND_API_KEY) {
-        console.log("[mail] No RESEND_API_KEY found, using mock email service");
+      if (!process.env.SENDGRID_API_KEY) {
+        console.log("[mail] No SENDGRID_API_KEY found, using mock email service");
         console.log(`[mail] Would send email to: ${input.to}`);
         console.log(`[mail] Subject: ${input.subject}`);
         return { ok: true };
       }
 
-      const resend = getResendClient();
-      const { data, error } = await resend.emails.send({
-        from: process.env.FROM_EMAIL || 'newsletter@yourdomain.com',
-        to: [input.to],
+      await sgMail.send({
+        to: input.to,
+        from: process.env.FROM_EMAIL || 'test@example.com',
         subject: input.subject,
         html: input.html,
       });
 
-      if (error) {
-        console.error("[mail] Resend error:", error);
-        return { ok: false, error: error.message || 'Failed to send email' };
-      }
-
-      console.log("[mail] Email sent successfully:", data?.id);
+      console.log("[mail] Email sent successfully via SendGrid");
       return { ok: true };
       
     } catch (error: unknown) {
-      console.error('[mail] Send error:', error);
+      console.error('[mail] SendGrid error:', error);
       
       try {
         const emailError = ErrorHandler.handleEmailError(error);
+        return { ok: false, error: emailError.message };
+      } catch (handlerError) {
+        console.error('[mail] Error handler failed:', handlerError);
         return {
           ok: false,
-          error: emailError.message,
-        };
-      } catch (specialError) {
-        if (specialError instanceof Error) {
-          return {
-            ok: false,
-            error: specialError.message,
-          };
-        }
-        return {
-          ok: false,
-          error: 'Failed to send email',
+          error: error instanceof Error ? error.message : 'Unknown email error',
         };
       }
     }

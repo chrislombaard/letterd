@@ -6,9 +6,11 @@ import {
   Stack, 
   Loader, 
   Group, 
-  Divider,
+  Card,
+  Badge,
   Box
 } from "@mantine/core";
+import { IconCalendar, IconMail } from "@tabler/icons-react";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -29,51 +31,92 @@ export default function ViewPosts() {
 
   if (error)
     return (
-      <Box p="md" style={{ borderLeft: "3px solid var(--mantine-color-red-5)" }}>
-        <Text c="red">Failed to load posts</Text>
-      </Box>
+      <Card withBorder p="lg" radius="md" bg="gray.0">
+        <Text c="red" ta="center">Failed to load posts</Text>
+      </Card>
     );
     
   if (!posts) 
-    return <Loader size="sm" />;
+    return (
+      <Group justify="center" py="xl">
+        <Loader size="lg" color="gray" />
+      </Group>
+    );
 
   return (
     <Box>
       {posts.length === 0 ? (
-        <Text size="sm" c="dimmed" ta="center" py="xl">
-          No posts yet
-        </Text>
+        <Card withBorder p="xl" radius="md" style={{ borderStyle: "dashed" }} bg="gray.0">
+          <Text size="lg" c="dimmed" ta="center">
+            No published posts yet
+          </Text>
+          <Text size="sm" c="dimmed" ta="center" mt="xs">
+            Create and publish your first newsletter above
+          </Text>
+        </Card>
       ) : (
-        <Stack gap="xl">
+        <Stack gap="lg">
           {posts.map((post) => (
-            <Box key={post.id}>
-              <Stack gap="sm">
-                <Title order={3} size="lg" fw={500}>
-                  {post.title}
-                </Title>
+            <Card 
+              key={post.id} 
+              withBorder 
+              p="xl" 
+              radius="md"
+              shadow="sm"
+              style={{
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+                },
+              }}
+            >
+              <Stack gap="md">
+                <Group justify="space-between" align="flex-start">
+                  <Title order={3} size="xl" fw={600} c="dark">
+                    {post.title}
+                  </Title>
+                  <Badge 
+                    variant="light" 
+                    color={post.status === 'SENT' ? 'gray' : 'dark'}
+                    size="lg"
+                  >
+                    {post.status}
+                  </Badge>
+                </Group>
                 
-                <Text size="sm" c="dimmed">
-                  {post.subject}
-                </Text>
+                <Group gap="xs" align="center">
+                  <IconMail size={16} color="var(--mantine-color-gray-6)" />
+                  <Text size="md" c="gray.7" fw={500}>
+                    {post.subject}
+                  </Text>
+                </Group>
                 
-                <Text 
-                  size="sm"
-                  style={{ lineHeight: 1.6 }}
+                <Box
+                  style={{
+                    background: '#f8f9fa',
+                    border: '1px solid #e9ecef',
+                    borderRadius: '8px',
+                    padding: '16px',
+                    lineHeight: 1.6,
+                  }}
                   dangerouslySetInnerHTML={{ __html: post.bodyHtml }} 
                 />
                 
-                <Group gap="md" mt="xs">
-                  <Text size="xs" c="dimmed">
-                    {new Date(post.createdAt).toLocaleDateString()}
-                  </Text>
-                  <Text size="xs" c="dimmed">
-                    {post.status}
-                  </Text>
+                <Group gap="lg" mt="md">
+                  <Group gap="xs" align="center">
+                    <IconCalendar size={14} color="var(--mantine-color-gray-5)" />
+                    <Text size="sm" c="dimmed">
+                      Published {new Date(post.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </Text>
+                  </Group>
                 </Group>
               </Stack>
-              
-              <Divider my="xl" />
-            </Box>
+            </Card>
           ))}
         </Stack>
       )}

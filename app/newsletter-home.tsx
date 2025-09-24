@@ -18,47 +18,71 @@ const ViewScheduledPosts = dynamic(() => import("./view-scheduled-posts"));
 
 export default function NewsletterHome() {
   return (
-    <Container size="md" py={60}>
-      <Stack gap={60}>
-        <Group justify="space-between" align="flex-start">
-          <Stack gap="sm">
-            <Title size="2.5rem" fw={400}>
+    <Container size="lg" py={40}>
+      <Stack gap={80}>
+        {/* Header */}
+        <Group justify="space-between" align="center">
+          <Stack gap={4}>
+            <Title 
+              size="3rem" 
+              fw={700} 
+              c="black"
+            >
               letterd
             </Title>
-            <Text size="lg" c="dimmed" maw={500}>
+            <Text size="xl" c="dimmed" fw={300}>
               Personal newsletter platform
             </Text>
           </Stack>
           <ThemeToggle />
         </Group>
 
-        <SimpleGrid cols={{ base: 1, md: 2 }} spacing={40}>
-          <Stack gap="md">
-            <Title order={2} size="xl" fw={500}>
-              Subscribe
-            </Title>
+        {/* Main Content Grid */}
+        <SimpleGrid cols={{ base: 1, md: 2 }} spacing={50}>
+          {/* Subscribe Section */}
+          <Stack gap="lg">
+            <Group gap="sm" align="baseline">
+              <Title order={2} size="2xl" fw={600} c="black">
+                Subscribe
+              </Title>
+              <Text size="sm" c="dimmed">
+                Join the newsletter
+              </Text>
+            </Group>
             <NewsletterSignup />
           </Stack>
 
-          <Stack gap="md">
-            <Title order={2} size="xl" fw={500}>
-              Create
-            </Title>
+          {/* Create Section */}
+          <Stack gap="lg">
+            <Group gap="sm" align="baseline">
+              <Title order={2} size="2xl" fw={600} c="black">
+                Create
+              </Title>
+              <Text size="sm" c="dimmed">
+                Write and publish
+              </Text>
+            </Group>
             <AuthorPost />
           </Stack>
         </SimpleGrid>
 
-        <Stack gap="lg">
-          <Title order={2} size="xl" fw={500} ta="center">
-            Posts
-          </Title>
+        {/* Posts Section */}
+        <Stack gap="xl">
+          <Group justify="center" gap="sm">
+            <Title order={2} size="2xl" fw={600} c="black">
+              Published Posts
+            </Title>
+          </Group>
           <ViewPosts />
         </Stack>
 
-        <Stack gap="lg">
-          <Title order={2} size="xl" fw={500} ta="center">
-            Scheduled Posts
-          </Title>
+        {/* Scheduled Posts Section */}
+        <Stack gap="xl">
+          <Group justify="center" gap="sm">
+            <Title order={2} size="2xl" fw={600} c="black">
+              Scheduled Posts
+            </Title>
+          </Group>
           <ViewScheduledPosts />
         </Stack>
       </Stack>

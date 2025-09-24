@@ -27,7 +27,7 @@ export default function NewsletterSignup() {
     
     if (res.ok) {
       notifications.show({ 
-        color: "green", 
+        color: "gray", 
         title: "Subscribed", 
         message: "You're now subscribed to the newsletter"
       });
@@ -35,7 +35,7 @@ export default function NewsletterSignup() {
     } else {
       const data = await res.json();
       notifications.show({ 
-        color: "red", 
+        color: "gray", 
         title: "Error", 
         message: data.error || "Please try again" 
       });
@@ -44,35 +44,49 @@ export default function NewsletterSignup() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Stack gap="md">
-        <Text size="sm" c="dimmed">
-          Get updates delivered to your inbox
-        </Text>
+      <Stack gap="lg">
+        <Stack gap="xs">
+          <Text size="md" c="dimmed">
+            Get updates delivered to your inbox
+          </Text>
+          <Text size="sm" c="dimmed">
+            No spam, unsubscribe anytime
+          </Text>
+        </Stack>
         
         <TextInput
           id="newsletter-email"
           type="email"
-          placeholder="Enter your email"
+          placeholder="your@email.com"
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
-          size="md"
+          size="lg"
+          radius="md"
+          styles={{
+            input: {
+              border: '2px solid #e9ecef',
+              '&:focus': {
+                borderColor: 'black',
+              },
+            },
+          }}
         />
         
         <Button 
           type="submit" 
           loading={loading} 
           fullWidth
-          size="md"
+          size="lg"
+          radius="md"
           color="dark"
           variant="filled"
+          style={{
+            backgroundColor: 'black',
+          }}
         >
           Subscribe
         </Button>
-        
-        <Text size="xs" c="dimmed">
-          No spam, unsubscribe anytime
-        </Text>
       </Stack>
     </form>
   );

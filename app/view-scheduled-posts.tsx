@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Stack, Card, Text, Group, Badge } from "@mantine/core";
+import { Stack, Card, Text, Group, Badge, Loader, Title } from "@mantine/core";
 import { IconClock, IconCalendar } from "@tabler/icons-react";
 import useSWR from "swr";
 
@@ -65,65 +65,102 @@ export default function ViewScheduledPosts() {
 
   globalRefreshScheduledPosts = mutate;
 
-  if (isLoading) return <Text c="dimmed">Loading scheduled posts...</Text>;
+  if (isLoading) 
+    return (
+      <Group justify="center" py="xl">
+        <Loader size="lg" color="gray" />
+      </Group>
+    );
 
-  if (error) return <Text c="red">Failed to load scheduled posts</Text>;
+  if (error) 
+    return (
+      <Card withBorder p="lg" radius="md" bg="gray.0">
+        <Text c="red" ta="center">Failed to load scheduled posts</Text>
+      </Card>
+    );
 
   if (response && "error" in response) {
-    return <Text c="red">Error: {response.error}</Text>;
+    return (
+      <Card withBorder p="lg" radius="md" bg="gray.0">
+        <Text c="red" ta="center">Error: {response.error}</Text>
+      </Card>
+    );
   }
 
   const posts = response as ScheduledPost[] | undefined;
 
   if (!posts || !Array.isArray(posts) || posts.length === 0) {
     return (
-      <Card withBorder p="md" bg="gray.0" style={{ borderStyle: "dashed" }}>
-        <Text c="dimmed" ta="center">
-          No posts scheduled yet. Create a post with a future date to see it
-          here.
+      <Card withBorder p="xl" radius="md" style={{ borderStyle: "dashed" }} bg="gray.0">
+        <Text size="lg" c="dimmed" ta="center">
+          No scheduled posts yet
+        </Text>
+        <Text size="sm" c="dimmed" ta="center" mt="xs">
+          Schedule a post above to see it appear here
         </Text>
       </Card>
     );
   }
 
   return (
-    <Stack gap="sm">
+    <Stack gap="lg">
       {posts.map((post) => (
-        <Card key={post.id} withBorder p="md" bg="blue.0">
-          <Group justify="space-between" align="flex-start">
-            <Stack gap="xs" style={{ flex: 1 }}>
-              <Group gap="xs">
-                <IconClock size={16} color="var(--mantine-color-blue-6)" />
-                <Text size="sm" fw={600}>
+        <Card 
+          key={post.id} 
+          withBorder 
+          p="xl" 
+          radius="md" 
+          bg="gray.0"
+          style={{
+            borderColor: 'var(--mantine-color-gray-2)',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+            '&:hover': {
+              transform: 'translateY(-2px)',
+              boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+            },
+          }}
+        >
+          <Stack gap="md">
+            <Group justify="space-between" align="flex-start">
+              <Group gap="sm" align="center">
+                <IconClock size={20} color="var(--mantine-color-gray-6)" />
+                <Title order={4} size="lg" fw={600} c="dark">
                   {post.title}
-                </Text>
-                <Badge variant="light" color="blue" size="sm">
-                  Scheduled
-                </Badge>
+                </Title>
               </Group>
+              <Badge variant="filled" color="dark" size="lg">
+                Scheduled
+              </Badge>
+            </Group>
 
-              <Text size="sm" c="dimmed">
+            <Group gap="xs" align="center" ml={32}>
+              <Text size="md" c="gray.7">
                 Subject: {post.subject}
               </Text>
+            </Group>
 
-              <Group gap="md" align="center">
-                <Group gap="xs" align="center">
-                  <IconCalendar size={14} />
-                  <Text size="xs" c="dimmed">
-                    {formatDateTime(post.scheduledAt)}
-                  </Text>
-                </Group>
-                <Text size="xs" c="blue.7" fw={500}>
-                  in {formatScheduledTime(post.scheduledAt)}
+            <Group gap="lg" align="center" ml={32}>
+              <Group gap="xs" align="center">
+                <IconCalendar size={16} color="var(--mantine-color-gray-6)" />
+                <Text size="sm" fw={500} c="dark">
+                  {formatDateTime(post.scheduledAt)}
                 </Text>
               </Group>
-            </Stack>
-          </Group>
+              <Badge variant="light" color="gray" size="md">
+                in {formatScheduledTime(post.scheduledAt)}
+              </Badge>
+            </Group>
+          </Stack>
         </Card>
       ))}
 
-      <Text size="xs" c="dimmed" ta="center" mt="xs">
-        Scheduled posts will be automatically sent at their designated times
+      <Text size="sm" c="dimmed" ta="center" mt="lg" style={{
+        padding: '12px',
+        background: '#f8f9fa',
+        borderRadius: '8px',
+        border: '1px solid #e9ecef',
+      }}>
+        📅 Scheduled posts will be automatically sent at their designated times
       </Text>
     </Stack>
   );
