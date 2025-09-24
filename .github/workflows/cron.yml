@@ -1,7 +1,7 @@
 name: Cron Tick
 on:
   schedule:
-    - cron: "0 * * * *" # hourly, UTC
+    - cron: "*/5 * * * *" # every 5 minutes for testing
   workflow_dispatch:
 
 permissions:
@@ -15,12 +15,11 @@ jobs:
   tick:
     name: Hit /api/cron/tick
     runs-on: ubuntu-latest
-    environment: production
     timeout-minutes: 2
     env:
       ENDPOINT: ${{ secrets.CRON_ENDPOINT }}
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
-      VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+      VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_SECRET }}
     steps:
       - name: Call endpoint
         run: |
