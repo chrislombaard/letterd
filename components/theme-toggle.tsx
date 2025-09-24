@@ -15,7 +15,7 @@ export function ThemeToggle() {
       <ActionIcon
         size="lg"
         variant="subtle"
-        color="blue"
+        color="gray"
         aria-label="Toggle color scheme"
         disabled
       >
@@ -29,7 +29,7 @@ export function ThemeToggle() {
       onClick={() => toggleColorScheme()}
       size="lg"
       variant="subtle"
-      color={isDark ? "yellow" : "blue"}
+      color={isDark ? "yellow" : "gray"}
       aria-label="Toggle color scheme"
     >
       {isDark ? (

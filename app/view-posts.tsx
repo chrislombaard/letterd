@@ -73,7 +73,7 @@ export default function ViewPosts() {
             >
               <Stack gap="md">
                 <Group justify="space-between" align="flex-start">
-                  <Title order={3} size="xl" fw={600} c="dark">
+                  <Title order={3} size="xl" fw={600}>
                     {post.title}
                   </Title>
                   <Badge 
@@ -87,19 +87,20 @@ export default function ViewPosts() {
                 
                 <Group gap="xs" align="center">
                   <IconMail size={16} color="var(--mantine-color-gray-6)" />
-                  <Text size="md" c="gray.7" fw={500}>
+                  <Text size="md" c="dimmed" fw={500}>
                     {post.subject}
                   </Text>
                 </Group>
                 
                 <Box
                   style={{
-                    background: '#f8f9fa',
-                    border: '1px solid #e9ecef',
+                    background: 'var(--mantine-color-gray-0)',
+                    border: '1px solid var(--mantine-color-gray-2)',
                     borderRadius: '8px',
                     padding: '16px',
                     lineHeight: 1.6,
                   }}
+                  className="post-content"
                   dangerouslySetInnerHTML={{ __html: post.bodyHtml }} 
                 />
                 

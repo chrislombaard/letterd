@@ -67,7 +67,7 @@ export default function NewsletterSignup() {
             input: {
               border: '2px solid #e9ecef',
               '&:focus': {
-                borderColor: 'black',
+                borderColor: 'var(--mantine-primary-color-6)',
               },
             },
           }}
@@ -81,9 +81,6 @@ export default function NewsletterSignup() {
           radius="md"
           color="dark"
           variant="filled"
-          style={{
-            backgroundColor: 'black',
-          }}
         >
           Subscribe
         </Button>

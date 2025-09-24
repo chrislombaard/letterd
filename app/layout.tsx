@@ -33,7 +33,7 @@ const theme = createTheme({
   colors: {
     dark: [
       '#f8f9fa',
-      '#e9ecef',
+      '#e9ecef', 
       '#dee2e6',
       '#ced4da',
       '#adb5bd',
@@ -42,6 +42,18 @@ const theme = createTheme({
       '#343a40',
       '#212529',
       '#000000'
+    ],
+    gray: [
+      '#f8f9fa',
+      '#f1f3f4',
+      '#e9ecef',
+      '#dee2e6',
+      '#ced4da',
+      '#adb5bd',
+      '#6c757d',
+      '#495057',
+      '#343a40',
+      '#212529'
     ],
   },
   primaryColor: 'dark',
@@ -67,15 +79,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-mantine-color-scheme="light" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <ColorSchemeScript 
-          defaultColorScheme="light" 
-          localStorageKey="mantine-color-scheme" 
-        />
+        <ColorSchemeScript />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased page-content`}>
-        <MantineProvider theme={theme} defaultColorScheme="light">
+        <MantineProvider theme={theme}>
           <Notifications 
             position="top-right" 
             containerWidth={400}

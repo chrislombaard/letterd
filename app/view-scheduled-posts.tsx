@@ -124,7 +124,7 @@ export default function ViewScheduledPosts() {
             <Group justify="space-between" align="flex-start">
               <Group gap="sm" align="center">
                 <IconClock size={20} color="var(--mantine-color-gray-6)" />
-                <Title order={4} size="lg" fw={600} c="dark">
+                <Title order={4} size="lg" fw={600}>
                   {post.title}
                 </Title>
               </Group>
@@ -134,7 +134,7 @@ export default function ViewScheduledPosts() {
             </Group>
 
             <Group gap="xs" align="center" ml={32}>
-              <Text size="md" c="gray.7">
+              <Text size="md" c="dimmed">
                 Subject: {post.subject}
               </Text>
             </Group>
@@ -142,7 +142,7 @@ export default function ViewScheduledPosts() {
             <Group gap="lg" align="center" ml={32}>
               <Group gap="xs" align="center">
                 <IconCalendar size={16} color="var(--mantine-color-gray-6)" />
-                <Text size="sm" fw={500} c="dark">
+                <Text size="sm" fw={500}>
                   {formatDateTime(post.scheduledAt)}
                 </Text>
               </Group>

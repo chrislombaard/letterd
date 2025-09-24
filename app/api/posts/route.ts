@@ -31,6 +31,15 @@ export async function POST(req: NextRequest) {
   } else if (parsed.data.scheduledAt) {
     status = PostStatus.SCHEDULED;
     scheduledAt = new Date(parsed.data.scheduledAt);
+    
+    // Debug logging to help diagnose timezone issues
+    console.log('[DEBUG] Scheduled post timezone info:');
+    console.log('  Input string:', parsed.data.scheduledAt);
+    console.log('  Parsed Date (local):', scheduledAt.toString());
+    console.log('  Parsed Date (UTC):', scheduledAt.toISOString());
+    console.log('  Current time (local):', new Date().toString());
+    console.log('  Current time (UTC):', new Date().toISOString());
+    console.log('  Timezone offset (minutes):', new Date().getTimezoneOffset());
   } else {
     status = PostStatus.DRAFT;
   }

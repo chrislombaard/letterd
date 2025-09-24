@@ -93,7 +93,7 @@ export default function AuthorPost() {
               input: {
                 border: '2px solid #e9ecef',
                 '&:focus': {
-                  borderColor: 'black',
+                  borderColor: 'var(--mantine-primary-color-6)',
                 },
               },
             }}
@@ -112,7 +112,7 @@ export default function AuthorPost() {
               input: {
                 border: '2px solid #e9ecef',
                 '&:focus': {
-                  borderColor: 'black',
+                  borderColor: 'var(--mantine-primary-color-6)',
                 },
               },
             }}
@@ -134,7 +134,7 @@ export default function AuthorPost() {
               input: {
                 border: '2px solid #e9ecef',
                 '&:focus': {
-                  borderColor: 'black',
+                  borderColor: 'var(--mantine-primary-color-6)',
                 },
               },
             }}
@@ -153,7 +153,7 @@ export default function AuthorPost() {
               input: {
                 border: '2px solid #e9ecef',
                 '&:focus': {
-                  borderColor: 'black',
+                  borderColor: 'var(--mantine-primary-color-6)',
                 },
               },
             }}
@@ -168,9 +168,6 @@ export default function AuthorPost() {
           radius="md"
           color="dark"
           variant="filled"
-          style={{
-            backgroundColor: 'black',
-          }}
         >
           {loading ? "Publishing..." : scheduledAt ? "Schedule Post" : "Publish Now"}
         </Button>

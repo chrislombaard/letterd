@@ -3,11 +3,19 @@
 :root {
   --background: #ffffff;
   --foreground: #212529;
+  --border-color: #e9ecef;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --focus-color: #495057;
+  --focus-color-alpha: rgba(73, 80, 87, 0.2);
 }
 
 [data-mantine-color-scheme="dark"] {
   --background: #1a1b1e;
   --foreground: #c1c2c5;
+  --border-color: #373a40;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --focus-color: #909296;
+  --focus-color-alpha: rgba(144, 146, 150, 0.2);
 }
 
 body {
@@ -41,16 +49,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #adb5bd;
+  background: var(--focus-color);
 }
 
 ::selection {
-  background: rgba(34, 139, 230, 0.2);
+  background: var(--focus-color-alpha);
   color: inherit;
 }
 
 *:focus {
-  outline: 2px solid #228be6;
+  outline: 2px solid var(--focus-color);
   outline-offset: 2px;
 }
 
@@ -69,13 +77,25 @@ button, input, textarea, select {
 
 .mantine-TextInput-input:focus,
 .mantine-Textarea-input:focus {
-  border-color: #228be6 !important;
-  box-shadow: 0 0 0 2px rgba(34, 139, 230, 0.2) !important;
+  border-color: var(--focus-color) !important;
+  box-shadow: 0 0 0 2px var(--focus-color-alpha) !important;
 }
 
 .mantine-Notification-root {
   border-radius: 12px !important;
   box-shadow: 0 4px 20px var(--shadow-color) !important;
+}
+
+/* Post content styling for dark mode */
+.post-content {
+  background: var(--mantine-color-gray-0) !important;
+  border: 1px solid var(--mantine-color-gray-2) !important;
+}
+
+[data-mantine-color-scheme="dark"] .post-content {
+  background: var(--mantine-color-dark-7) !important;
+  border: 1px solid var(--mantine-color-dark-4) !important;
+  color: var(--mantine-color-gray-0) !important;
 }
 
 @keyframes fadeIn {

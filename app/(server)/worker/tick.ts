@@ -42,17 +42,28 @@ export async function processPost(post: Post, subscribers: Subscriber[]) {
 }
 
 export async function tick() {
+  const currentTime = new Date();
+  
+  console.log('[DEBUG] Tick running at:');
+  console.log('  Current time (local):', currentTime.toString());
+  console.log('  Current time (UTC):', currentTime.toISOString());
+  
   const [duePosts, activeSubscribers] = await Promise.all([
     prisma.post.findMany({
       where: {
         status: "SCHEDULED",
-        scheduledAt: { lte: new Date() },
+        scheduledAt: { lte: currentTime },
       },
     }),
     prisma.subscriber.findMany({
       where: { status: "ACTIVE" },
     }),
   ]);
+
+  console.log('[DEBUG] Found', duePosts.length, 'due posts');
+  duePosts.forEach(post => {
+    console.log('  Post:', post.title, 'scheduled for:', post.scheduledAt?.toISOString(), '(UTC)');
+  });
 
   if (duePosts.length === 0) {
     return { processed: 0, message: "No scheduled posts due" };

@@ -26,7 +26,7 @@ export default function NewsletterHome() {
             <Title 
               size="3rem" 
               fw={700} 
-              c="black"
+              c="dark"
             >
               letterd
             </Title>
@@ -42,7 +42,7 @@ export default function NewsletterHome() {
           {/* Subscribe Section */}
           <Stack gap="lg">
             <Group gap="sm" align="baseline">
-              <Title order={2} size="2xl" fw={600} c="black">
+              <Title order={2} size="2xl" fw={600} c="dark">
                 Subscribe
               </Title>
               <Text size="sm" c="dimmed">
@@ -55,7 +55,7 @@ export default function NewsletterHome() {
           {/* Create Section */}
           <Stack gap="lg">
             <Group gap="sm" align="baseline">
-              <Title order={2} size="2xl" fw={600} c="black">
+              <Title order={2} size="2xl" fw={600} c="dark">
                 Create
               </Title>
               <Text size="sm" c="dimmed">
@@ -69,7 +69,7 @@ export default function NewsletterHome() {
         {/* Posts Section */}
         <Stack gap="xl">
           <Group justify="center" gap="sm">
-            <Title order={2} size="2xl" fw={600} c="black">
+            <Title order={2} size="2xl" fw={600} c="dark">
               Published Posts
             </Title>
           </Group>
@@ -79,7 +79,7 @@ export default function NewsletterHome() {
         {/* Scheduled Posts Section */}
         <Stack gap="xl">
           <Group justify="center" gap="sm">
-            <Title order={2} size="2xl" fw={600} c="black">
+            <Title order={2} size="2xl" fw={600} c="dark">
               Scheduled Posts
             </Title>
           </Group>
