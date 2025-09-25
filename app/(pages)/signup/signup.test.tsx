@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MantineProvider } from '@mantine/core';
-import NewsletterSignup from '../app/newsletter-signup';
+import NewsletterSignup from './signup';
 
 jest.mock('@mantine/notifications', () => ({
   notifications: {
@@ -27,7 +27,7 @@ describe('NewsletterSignup', () => {
     renderWithProvider(<NewsletterSignup />);
     
     expect(screen.getByText('Get updates delivered to your inbox')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Enter your email')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('your@email.com')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /subscribe/i })).toBeInTheDocument();
     expect(screen.getByText('No spam, unsubscribe anytime')).toBeInTheDocument();
   });
@@ -53,7 +53,7 @@ describe('NewsletterSignup', () => {
 
     renderWithProvider(<NewsletterSignup />);
     
-    const emailInput = screen.getByPlaceholderText('Enter your email');
+    const emailInput = screen.getByPlaceholderText('your@email.com');
     const submitButton = screen.getByRole('button', { name: /subscribe/i });
     
     await user.type(emailInput, 'test@example.com');
@@ -75,7 +75,7 @@ describe('NewsletterSignup', () => {
 
     renderWithProvider(<NewsletterSignup />);
     
-    const emailInput = screen.getByPlaceholderText('Enter your email');
+    const emailInput = screen.getByPlaceholderText('your@email.com');
     const submitButton = screen.getByRole('button', { name: /subscribe/i });
     
     await user.type(emailInput, 'test@example.com');
@@ -94,7 +94,7 @@ describe('NewsletterSignup', () => {
 
     renderWithProvider(<NewsletterSignup />);
     
-    const emailInput = screen.getByPlaceholderText('Enter your email') as HTMLInputElement;
+    const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /subscribe/i });
     
     await user.type(emailInput, 'test@example.com');
@@ -116,7 +116,7 @@ describe('NewsletterSignup', () => {
 
     renderWithProvider(<NewsletterSignup />);
     
-    const emailInput = screen.getByPlaceholderText('Enter your email');
+    const emailInput = screen.getByPlaceholderText('your@email.com');
     const submitButton = screen.getByRole('button', { name: /subscribe/i });
     
     await user.type(emailInput, 'test@example.com');
@@ -126,9 +126,10 @@ describe('NewsletterSignup', () => {
       expect(global.fetch).toHaveBeenCalled();
     });
     
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { notifications } = require('@mantine/notifications');
     expect(notifications.show).toHaveBeenCalledWith({
-      color: 'red',
+      color: 'gray',
       title: 'Error',
       message: errorMessage,
     });

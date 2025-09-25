@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
-import ViewPosts, { refreshPosts } from '../app/view-posts';
+import ViewPosts, { refreshPosts } from './view-posts';
 
 jest.mock('swr', () => {
   const mockMutate = jest.fn();

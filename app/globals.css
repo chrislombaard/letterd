@@ -2,143 +2,29 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #212529;
-  --border-color: #e9ecef;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --focus-color: #495057;
-  --focus-color-alpha: rgba(73, 80, 87, 0.2);
+  --foreground: #000000;
 }
 
 [data-mantine-color-scheme="dark"] {
   --background: #1a1b1e;
   --foreground: #c1c2c5;
-  --border-color: #373a40;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --focus-color: #909296;
-  --focus-color-alpha: rgba(144, 146, 150, 0.2);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  line-height: 1.5;
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Dark mode button styling */
+.mantine-Button-root[data-variant="filled"][data-color="dark"] {
+  background-color: #000000;
+  color: #ffffff;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--focus-color);
-}
-
-::selection {
-  background: var(--focus-color-alpha);
-  color: inherit;
-}
-
-*:focus {
-  outline: 2px solid var(--focus-color);
-  outline-offset: 2px;
-}
-
-button, input, textarea, select {
-  transition: all 0.2s ease;
-}
-
-.mantine-Card-root {
-  transition: all 0.3s ease !important;
-}
-
-.mantine-Card-root:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px var(--shadow-color) !important;
-}
-
-.mantine-TextInput-input:focus,
-.mantine-Textarea-input:focus {
-  border-color: var(--focus-color) !important;
-  box-shadow: 0 0 0 2px var(--focus-color-alpha) !important;
-}
-
-.mantine-Notification-root {
-  border-radius: 12px !important;
-  box-shadow: 0 4px 20px var(--shadow-color) !important;
-}
-
-/* Post content styling for dark mode */
-.post-content {
-  background: var(--mantine-color-gray-0) !important;
-  border: 1px solid var(--mantine-color-gray-2) !important;
-}
-
-[data-mantine-color-scheme="dark"] .post-content {
-  background: var(--mantine-color-dark-7) !important;
-  border: 1px solid var(--mantine-color-dark-4) !important;
-  color: var(--mantine-color-gray-0) !important;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.page-content {
-  animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.loading-spinner {
-  animation: spin 1s linear infinite;
-}
-
-@media (max-width: 768px) {
-  body {
-    font-size: 14px;
-  }
-}
-
-@media print {
-  body {
-    background: white !important;
-    color: black !important;
-  }
-  
-  .no-print {
-    display: none !important;
-  }
+[data-mantine-color-scheme="dark"] .mantine-Button-root[data-variant="filled"][data-color="dark"] {
+  background-color: #ffffff;
+  color: #000000;
 }

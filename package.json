@@ -9,8 +9,6 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "setup-email": "node scripts/setup-email.js",
-    "test-middleware": "./scripts/test-middleware.sh",
     "prisma:gen": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
@@ -37,7 +35,6 @@
     "@tabler/icons-react": "^3.35.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "resend": "^6.1.0",
     "swr": "^2.3.6",
     "zod": "^4.1.9"
   },

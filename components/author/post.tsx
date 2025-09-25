@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import { TextInput, Textarea, Button, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { refreshPosts } from "./view-posts";
-import { refreshScheduledPosts } from "./view-scheduled-posts";
+import { refreshPosts } from "@/app/(pages)/posts/posts";
+import { refreshScheduledPosts } from "@/app/(pages)/scheduled/scheduled-posts";
 
 export default function AuthorPost() {
   const [title, setTitle] = useState("");
@@ -91,9 +91,9 @@ export default function AuthorPost() {
             radius="md"
             styles={{
               input: {
-                border: '2px solid #e9ecef',
-                '&:focus': {
-                  borderColor: 'var(--mantine-primary-color-6)',
+                border: "2px solid #e9ecef",
+                "&:focus": {
+                  borderColor: "var(--focus-color)",
                 },
               },
             }}
@@ -110,9 +110,9 @@ export default function AuthorPost() {
             radius="md"
             styles={{
               input: {
-                border: '2px solid #e9ecef',
-                '&:focus': {
-                  borderColor: 'var(--mantine-primary-color-6)',
+                border: "2px solid #e9ecef",
+                "&:focus": {
+                  borderColor: "var(--focus-color)",
                 },
               },
             }}
@@ -132,9 +132,9 @@ export default function AuthorPost() {
             radius="md"
             styles={{
               input: {
-                border: '2px solid #e9ecef',
-                '&:focus': {
-                  borderColor: 'var(--mantine-primary-color-6)',
+                border: "2px solid #e9ecef",
+                "&:focus": {
+                  borderColor: "var(--focus-color)",
                 },
               },
             }}
@@ -151,9 +151,9 @@ export default function AuthorPost() {
             radius="md"
             styles={{
               input: {
-                border: '2px solid #e9ecef',
-                '&:focus': {
-                  borderColor: 'var(--mantine-primary-color-6)',
+                border: "2px solid #e9ecef",
+                "&:focus": {
+                  borderColor: "var(--focus-color)",
                 },
               },
             }}
@@ -169,7 +169,11 @@ export default function AuthorPost() {
           color="dark"
           variant="filled"
         >
-          {loading ? "Publishing..." : scheduledAt ? "Schedule Post" : "Publish Now"}
+          {loading
+            ? "Publishing..."
+            : scheduledAt
+              ? "Schedule Post"
+              : "Publish Now"}
         </Button>
       </Stack>
     </form>

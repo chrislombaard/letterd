@@ -2,7 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MantineProvider } from '@mantine/core';
-import AuthorPost from '../app/author-post';
+import AuthorPost from './author-post';
 
 jest.mock('@mantine/notifications', () => ({
   notifications: {
@@ -27,7 +27,7 @@ describe('AuthorPost', () => {
   it('renders the author post form', () => {
     renderWithProvider(<AuthorPost />);
     
-    expect(screen.getByText(/Create and schedule your newsletter post/)).toBeInTheDocument();
+    expect(screen.getByText(/Write and publish your newsletter/)).toBeInTheDocument();
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email subject/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/content/i)).toBeInTheDocument();
@@ -97,7 +97,7 @@ describe('AuthorPost', () => {
     await user.click(submitButton);
     
     expect(submitButton).toBeDisabled();
-    expect(screen.getByText('Creating...')).toBeInTheDocument();
+    expect(screen.getByText('Publishing...')).toBeInTheDocument();
   });
 
   it('clears form after successful submission', async () => {
@@ -153,7 +153,7 @@ describe('AuthorPost', () => {
     
     const { notifications } = require('@mantine/notifications');
     expect(notifications.show).toHaveBeenCalledWith({
-      color: 'red',
+      color: 'gray',
       title: 'Error',
       message: 'Failed to create post',
     });

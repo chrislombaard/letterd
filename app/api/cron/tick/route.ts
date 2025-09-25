@@ -7,9 +7,9 @@ import { ErrorHandler, AuthenticationError } from "@/lib/errors";
 
 const prisma = new PrismaClient();
 
-function truncateToHourUTC(date: Date) {
+function truncateToMinuteUTC(date: Date) {
   const truncated = new Date(date.toISOString());
-  truncated.setUTCMinutes(0, 0, 0);
+  truncated.setUTCSeconds(0, 0);
   return truncated;
 }
 
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const key = `tick:${truncateToHourUTC(new Date()).toISOString()}`;
+  const key = `tick:${truncateToMinuteUTC(new Date()).toISOString()}`;
 
   try {
     await prisma.cronExecution.create({ data: { key } });

@@ -3,7 +3,7 @@
 import React from "react";
 import { ActionIcon } from "@mantine/core";
 import { IconSun, IconMoon } from "@tabler/icons-react";
-import { useHydrationSafeColorScheme } from "../hooks/use-hydration-safe-color-scheme";
+import { useHydrationSafeColorScheme } from "../../hooks/use-hydration-safe-color-scheme";
 
 export function ThemeToggle() {
   const { colorScheme, toggleColorScheme, isHydrated } = useHydrationSafeColorScheme();

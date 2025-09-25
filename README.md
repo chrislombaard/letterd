@@ -1,39 +1,37 @@
 # Letterd - Newsletter Platform
 
-A full-stack newsletter application built with Next.js, Prisma, and TypeScript. Create, schedule, and send newsletters to subscribers with automated email delivery.
+A full-stack newsletter application take-home submission - built with Next.js, Prisma, and TypeScript. Create, schedule, and send newsletters to subscribers with automated email delivery. Not the prettiest, but I ran out of time to polish the UI as much as I liked. I initially made the email service work with a mock, but decided last minute to add Sendgrid using a personally autheticated email (included in the free plan, so I didn't need to register or buy a new domain). Frontend is built with Mantine, I didn't spend that much time on the CSS, there are patterns that I would have liked to refactor and simplify.
 
-## Quick Start for Reviewers
+## Quick Start
 
 ```bash
-# 1. Clone and install
+# 1. Clone, and install repo locally
 git clone https://github.com/chrislombaard/letterd.git
 cd letterd
 npm install
 
-# 2. Set up database (requires PostgreSQL)
+# 2. Set up prisma database, create env var files
+
 cp .env.example .env.local
-# Edit .env.local: set DATABASE_URL and optionally ADMIN_PASS
+
 npx prisma migrate dev --name init
 npx prisma db seed
 
-# 3. Start the app
+# 3. Run the app in dev mode
 npm run dev
-# Open http://localhost:3000
+# Navigate to http://localhost:3000
 
-# 4. Test it out
-npm test  # Run 34 tests
-node scripts/reviewer-guide.js  # Health check
+# 4. Run the test suites with jest
+npm test 
 ```
-
-**No email service required** - the app works with mock emails for testing.
 
 ## Features
 
-- **Newsletter Creation**: Rich HTML newsletters with immediate or scheduled publishing
-- **Subscriber Management**: Email subscription with unsubscribe functionality
-- **Email Delivery**: Automated background processing with delivery tracking
-- **Admin Dashboard**: Protected interface for system monitoring
-- **Real-time UI**: Live updates when newsletters are published
+- **Newsletter Creation**: Rich HTML newsletters with instant or scheduled publishing
+- **Subscriber Management**: You can subscribe to the newsletter (but unsubscribe is not implemented)
+- **Email Delivery**: Automated background processing with delivery tracking. Cron job using github actions to process the scheduled deliveries. (Room for optimisation here)
+- **Admin Dashboard**: Protected interface for system monitoring (view stats on subscribers, posts, scheduled posts etc)
+- **Real-time UI**: Live updates when newsletters are published, using `mutate` from `swr` to grab the latest posts
 - **Comprehensive Testing**: 34 tests covering frontend, API, and integration workflows
 
 ## Technology Stack Choices
@@ -44,13 +42,13 @@ node scripts/reviewer-guide.js  # Health check
 
 **Custom Background Processing**: Built simple cron-based task queue instead of Redis/external services to keep infrastructure minimal while maintaining full control over email delivery logic.
 
-**Resend for Email**: Developer-friendly API with good deliverability rates. Supports sandbox mode for free testing without domain verification.
+**Sendgrid for Email**: Developer-friendly API with good deliverability rates. Supports sandbox mode for free testing without domain verification.
 
 **React Testing Library + Jest**: Comprehensive testing strategy covering user interactions, API endpoints, and end-to-end workflows. 34 tests provide confidence in core functionality.
 
 ## Key Trade-offs Made
 
-**Custom Task Queue vs External Service**: Built in-process task handling instead of using Redis/SQS. This limits horizontal scaling but reduces infrastructure complexity and keeps costs low for smaller deployments.
+**Custom Task Queue vs External Service**: Built in-process task handling instead of using Redis/SQS. This limits horizontal scaling but reduces infrastructure complexity and keeps costs low for smaller deployments. 
 
 **Single Database vs Microservices**: Used one PostgreSQL database for all data instead of separate services for posts/subscribers/delivery. Simpler to deploy and debug, but creates coupling between domains.
 
@@ -68,20 +66,22 @@ These trade-offs prioritize simplicity and fast development while maintaining co
 
 - Node.js 18+
 - PostgreSQL database
-- Resend account (optional)
+- Prisma account
+- Vercel account
+- Sendgrid account (optional)
 
 ### Environment Configuration
 
 ```env
 # Required
 DATABASE_URL="postgresql://username:password@localhost:5432/letterd"
+DIRECT_URL="postgresql://username:password@localhost:5432/letterd"
+
 ADMIN_USER="admin"
 ADMIN_PASS="your_secure_password"
 CRON_SECRET="generated_secret_key"
 
-# Optional (uses mock service if not set)
-RESEND_API_KEY="re_your_api_key"
-FROM_EMAIL="onboarding@resend.dev"  # Free sandbox mode
+FROM_EMAIL="onboarding@letterd.dev"  
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
@@ -93,12 +93,6 @@ npx prisma db seed
 ```
 
 ### Quick Setup Script
-
-```bash
-node scripts/setup-email.js  
-```
-
-## API Endpoints
 
 ### Core Operations
 
@@ -141,52 +135,17 @@ Test coverage includes:
 
 **Status: 34/34 tests passing** (API route tests work via integration tests due to Jest/Next.js compatibility issues)
 
-````bash
-**Status: 34/34 tests passing** (API route tests work via integration tests due to Jest/Next.js compatibility issues)
-
-## Production Deployment
-
-### Environment Setup
-```env
-# Required for production
-DATABASE_URL=postgresql://prod_user:password@prod_host:5432/letterd
-DIRECT_URL=postgresql://prod_user:password@prod_host:5432/letterd
-RESEND_API_KEY=re_production_key
-FROM_EMAIL=noreply@yourdomain.com
-ADMIN_USER=admin
-ADMIN_PASS=secure_production_password
-CRON_SECRET=cryptographically_secure_random_key
-NEXT_PUBLIC_APP_URL=https://yourdomain.com
-````
-
-### Deployment Steps
-
-```bash
-# 1. Build application
-npm run build
-npm start
-
-# 2. Database migration
-npx prisma migrate deploy
-npx prisma db seed
-
-# 3. Set up cron job to hit /api/cron/tick endpoint
-# Example with GitHub Actions, cron service, or server cron
-```
-
 ### Production Considerations
 
-- **Database**: Use managed PostgreSQL (Supabase, Neon, or AWS RDS)
-- **Email Service**: Verify domain in Resend for production deliverability
-- **Cron Jobs**: External service to trigger `/api/cron/tick?secret=SECRET`
+- **Database**: Lean more into Prisma Accelerate for better query execution speed and reliability.
+- **Email Service**: Verify domain to use in production not personal email
+- **Cron Jobs**: Use a more robust setup like Redis Queue, or AWS MQS, or rabbitmq
 - **Monitoring**: Set up alerts for failed deliveries and stuck tasks
-- **Security**: Use strong passwords, secure secrets, and HTTPS only
+- **Security**: Use strong passwords, secure secrets, and HTTPS only. 
 
 ### Deployment Platforms
 
-- **Vercel**: Deploy directly from GitHub with environment variables
-- **Railway/Render**: Full-stack deployment with PostgreSQL add-on
-- **Docker**: Use included Dockerfile for container deployment
+- Deploy directly from GitHub with Vercel, building on this could use AWS, or GCP MIG, serverless stack or terraform
 
 ## Future Improvements
 
@@ -197,7 +156,7 @@ Given more time, these improvements would be prioritized:
 - Worker locking to prevent race conditions in email delivery
 - Circuit breaker pattern for email service reliability
 - Enhanced monitoring dashboard with delivery metrics
-- Dead letter queue for failed email investigation
+- Dead letter queue for failed email deliveries
 
 ### Medium-term (1-2 months)
 
@@ -209,20 +168,10 @@ Given more time, these improvements would be prioritized:
 ### Long-term (3+ months)
 
 - Multi-tenant support for multiple newsletters
-- Advanced analytics and subscriber segmentation
+- Advanced analytics and subscriber management
 - API rate limiting and usage monitoring
 
 **When to add them**: Immediate needs first (worker locking), then operational improvements as user base grows. UI enhancements can wait until core reliability is proven.
-
-## Available Scripts
-
-```bash
-npm run dev              # Development server
-npm run build            # Production build
-npm test                 # Test suite
-npx prisma studio        # Database UI
-node scripts/setup-email.js  # Interactive setup
-```
 
 ## Database Schema
 
@@ -230,7 +179,7 @@ Five main tables handle the newsletter system:
 
 - **Post**: Newsletter content and scheduling
 - **Subscriber**: Email addresses and subscription status
-- **Delivery**: Tracks which emails were sent to whom
+- **Delivery**: Tracks which emails were sent to which people
 - **Task**: Background job queue for email processing
 - **CronExecution**: Prevents duplicate cron job execution
 
@@ -242,8 +191,7 @@ letterd/
 │   └── *.tsx              # Pages and components
 ├── lib/                   # Shared utilities
 ├── db/                    # Database schema and migrations
-├── components/            # React components
-├── __tests__/             # Test files
+├── components/            # React components (with co-located tests)
 └── scripts/               # Setup scripts
 ```
 
@@ -322,33 +270,24 @@ When you publish a post immediately:
 
 ### Utilities
 
-- `POST /api/test-email` - Send test email
 - `GET /api/admin/dashboard` - Admin dashboard metrics
 
 ## Troubleshooting
 
 ### Common Issues
 
-**Database Connection Errors**:
-
-```bash
-brew services start postgresql
-
-docker run --name postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres
-```
-
 **Email Not Sending**:
 
-- Check `RESEND_API_KEY` is valid
-- Verify `FROM_EMAIL` domain is verified in Resend
-- Use `onboarding@resend.dev` for sandbox testing
-- Check console logs for mock email output
+- Check `SENDGRID_API_KEY` is valid
+- Verify `FROM_EMAIL` domain is verified in Sendgrid
+- Check console logs on Vercel deployment logs for more info
 
 **Tests Failing**:
 
-- Ensure test database is clean: `npm run test:reset`
-- Check environment variables in `.env.test`
-- Run tests individually: `npm test -- __tests__/specific.test.tsx`
+- Check mock import order
+- Have you mocked the correct dependencies?
+- Check environment variables are correct
+- Run tests individually: `npm test -- path/to/specific.test.tsx`
 
 **Production Build Errors**:
 
@@ -356,56 +295,16 @@ docker run --name postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgre
 - Type errors: Run `npm run build` to check TypeScript compilation
 - Missing environment variables: Ensure all required env vars are set
 
-## Available Scripts
-
-```bash
-# Development
-npm run dev              # Start development server with Turbopack
-npm run build            # Build for production
-npm run start            # Start production server
-
-# Database
-npm run prisma:migrate   # Run database migrations
-npm run prisma:seed      # Seed database with sample data
-npx prisma studio        # Open prisma database UI
-
-# Testing
-npm test                 # Run test suite
-npm run test:watch       # Run tests in watch mode
-npm run coverage         # Run tests with coverage report
-
 # Utilities
-npm run setup-email      # Interactive email setup
-node scripts/reviewer-guide.js  # Complete health check for reviewers
-```
-
-## Testing
-
-Run the complete test suite:
-
-```bash
-npm test
-```
-
-Run specific test categories:
-
-```bash
-# Frontend tests
-npm test __tests__/
-
-# API integration tests
-npm test app/api/
-
-# Run tests in watch mode
-npm test -- --watch
-```
 
 The test suite includes:
 
-- **Frontend Components**: Form interactions, theme toggling, post display (21 tests)
-- **API Endpoints**: CRUD operations, validation, error handling (5 tests - currently skipped due to Jest/Next.js compatibility)
-- **Integration Tests**: End-to-end newsletter workflows (4 tests)
+- **Frontend Components**: Form interactions, theme toggling, post display
+- **API Endpoints**: CRUD operations, validation, error handling 
+- **Integration Tests**: End-to-end newsletter workflows 
 - **Background Processing**: Cron jobs, email delivery, task processing
+
+Something to add for future - Cypress e2e tests
 
 ### Manual Testing Guide
 
@@ -417,16 +316,3 @@ The test suite includes:
 2. **Subscribe to Newsletter**:
    - Enter email in subscribe form
    - Check console logs for confirmation (if using mock email)
-
-3. **Test Email Delivery**:
-
-   ```bash
-   curl -X POST http://localhost:3000/api/test-email \
-     -H "Content-Type: application/json" \
-     -d '{"to":"your-email@example.com"}'
-   ```
-
-4. **Trigger Cron Processing**:
-   ```bash
-   curl http://localhost:3000/api/cron/tick?secret=YOUR_CRON_SECRET
-   ```

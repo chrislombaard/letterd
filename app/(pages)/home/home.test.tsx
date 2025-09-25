@@ -1,12 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import { MantineProvider } from "@mantine/core";
-import NewsletterHome from "../app/newsletter-home";
+import NewsletterHome from "./home";
 
 jest.mock("next/dynamic", () => {
   return jest.fn((importFunc) => {
     const modulePath = importFunc.toString();
 
-    if (modulePath.includes("newsletter-signup")) {
+    if (modulePath.includes("signup")) {
       return function MockNewsletterSignup() {
         return (
           <div data-testid="newsletter-signup">Newsletter Signup Component</div>
@@ -14,13 +14,13 @@ jest.mock("next/dynamic", () => {
       };
     }
 
-    if (modulePath.includes("author-post")) {
+    if (modulePath.includes("post")) {
       return function MockAuthorPost() {
         return <div data-testid="author-post">Author Post Component</div>;
       };
     }
 
-    if (modulePath.includes("view-posts")) {
+    if (modulePath.includes("posts")) {
       return function MockViewPosts() {
         return <div data-testid="view-posts">View Posts Component</div>;
       };
@@ -32,7 +32,7 @@ jest.mock("next/dynamic", () => {
   });
 });
 
-jest.mock("../components/theme-toggle", () => {
+jest.mock("@/components/theme/toggle", () => {
   return {
     ThemeToggle: function MockThemeToggle() {
       return <button data-testid="theme-toggle">Theme Toggle</button>;
@@ -81,14 +81,14 @@ describe("NewsletterHome", () => {
   it("displays the posts section", () => {
     renderWithProvider(<NewsletterHome />);
 
-    expect(screen.getByText("Posts")).toBeInTheDocument();
+    expect(screen.getByText("Published Posts")).toBeInTheDocument();
     expect(screen.getByTestId("view-posts")).toBeInTheDocument();
   });
 
   it("has proper layout structure", () => {
     renderWithProvider(<NewsletterHome />);
 
-    const sections = ["Subscribe", "Create", "Posts"];
+    const sections = ["Subscribe", "Create", "Published Posts"];
     sections.forEach((section) => {
       expect(screen.getByText(section)).toBeInTheDocument();
     });

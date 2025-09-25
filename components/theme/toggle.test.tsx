@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MantineProvider } from '@mantine/core';
-import { ThemeToggle } from '../components/theme-toggle';
+import { ThemeToggle } from './toggle';
 
 const mockToggleColorScheme = jest.fn();
 const mockColorScheme = jest.fn().mockReturnValue('light');

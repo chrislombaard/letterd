@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { render, screen } from "@testing-library/react";
 import { MantineProvider } from "@mantine/core";
-import ViewScheduledPosts from "../app/view-scheduled-posts";
+import ViewScheduledPosts from "./view-scheduled-posts";
 
 jest.mock("swr", () => ({
   __esModule: true,
@@ -27,7 +27,7 @@ describe("ViewScheduledPosts", () => {
     });
 
     renderWithMantine(<ViewScheduledPosts />);
-    expect(screen.getByText("Loading scheduled posts...")).toBeInTheDocument();
+    expect(document.querySelector('.mantine-Loader-root')).toBeTruthy();
   });
 
   it("shows empty state when no scheduled posts", () => {
@@ -38,7 +38,7 @@ describe("ViewScheduledPosts", () => {
     });
 
     renderWithMantine(<ViewScheduledPosts />);
-    expect(screen.getByText(/No posts scheduled yet/)).toBeInTheDocument();
+    expect(screen.getByText(/No scheduled posts yet/)).toBeInTheDocument();
   });
 
   it("displays scheduled posts correctly", () => {

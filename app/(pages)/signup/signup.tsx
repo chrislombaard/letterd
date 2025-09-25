@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  TextInput, 
-  Button, 
-  Stack, 
-  Text
-} from "@mantine/core";
+import { TextInput, Button, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
 export default function NewsletterSignup() {
@@ -24,20 +19,20 @@ export default function NewsletterSignup() {
     });
 
     setLoading(false);
-    
+
     if (res.ok) {
-      notifications.show({ 
-        color: "gray", 
-        title: "Subscribed", 
-        message: "You're now subscribed to the newsletter"
+      notifications.show({
+        color: "gray",
+        title: "Subscribed",
+        message: "You're now subscribed to the newsletter",
       });
       setEmail("");
     } else {
       const data = await res.json();
-      notifications.show({ 
-        color: "gray", 
-        title: "Error", 
-        message: data.error || "Please try again" 
+      notifications.show({
+        color: "gray",
+        title: "Error",
+        message: data.error || "Please try again",
       });
     }
   }
@@ -53,29 +48,29 @@ export default function NewsletterSignup() {
             No spam, unsubscribe anytime
           </Text>
         </Stack>
-        
+
         <TextInput
           id="newsletter-email"
           type="email"
           placeholder="your@email.com"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           required
           size="lg"
           radius="md"
           styles={{
             input: {
-              border: '2px solid #e9ecef',
-              '&:focus': {
-                borderColor: 'var(--mantine-primary-color-6)',
+              border: "2px solid #e9ecef",
+              "&:focus": {
+                borderColor: "var(--focus-color)",
               },
             },
           }}
         />
-        
-        <Button 
-          type="submit" 
-          loading={loading} 
+
+        <Button
+          type="submit"
+          loading={loading}
           fullWidth
           size="lg"
           radius="md"
