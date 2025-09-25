@@ -11,8 +11,8 @@ interface EmailTemplateData {
 }
 
 export function generateNewsletterEmail(data: EmailTemplateData): string {
-  const { title, subject, bodyHtml, unsubscribeUrl = '#' } = data;
-  
+  const { title, subject, bodyHtml, unsubscribeUrl = "#" } = data;
+
   return `
     <!DOCTYPE html>
     <html>

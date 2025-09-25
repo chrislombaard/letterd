@@ -2,15 +2,15 @@ import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
-import '@mantine/core/styles.css';
-import '@mantine/notifications/styles.css';
-import './globals.css';
+import { ColorSchemeScript, MantineProvider, createTheme } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
-  display: 'swap',
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -22,10 +22,10 @@ const theme = createTheme({
   fontFamily: inter.style.fontFamily,
   headings: {
     fontFamily: inter.style.fontFamily,
-    fontWeight: '700',
+    fontWeight: "700",
   },
-  primaryColor: 'dark',
-  defaultRadius: 'sm',
+  primaryColor: "dark",
+  defaultRadius: "sm",
 });
 
 export default function RootLayout({

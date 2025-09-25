@@ -43,7 +43,7 @@ export async function processPost(post: Post, subscribers: Subscriber[]) {
 
 export async function tick() {
   const currentTime = new Date();
-  
+
   const [duePosts, activeSubscribers] = await Promise.all([
     prisma.post.findMany({
       where: {

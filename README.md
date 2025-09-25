@@ -1,6 +1,8 @@
 # Letterd - Newsletter Platform
 
-A full-stack newsletter application take-home submission - built with Next.js, Prisma, and TypeScript. Create, schedule, and send newsletters to subscribers with automated email delivery. Not the prettiest, but I ran out of time to polish the UI as much as I liked. I initially made the email service work with a mock, but decided last minute to add Sendgrid using a personally autheticated email (included in the free plan, so I didn't need to register or buy a new domain). Frontend is built with Mantine, I didn't spend that much time on the CSS, there are patterns that I would have liked to refactor and simplify.
+Click here to view the production site - https://letterd.vercel.app/
+
+A full-stack newsletter application take-home submission - built with Next.js, Prisma, and TypeScript. Create, schedule, and send newsletters to subscribers with automated email delivery. Not the prettiest, but I ran out of time to polish the UI as much as I liked. I initially made the email service work with a mock, but decided last minute to add Sendgrid using a personally autheticated email (included in the free plan, so I didn't need to register or buy a new domain). Frontend is built with Mantine, I didn't spend as much time as I would have liked on the CSS, so there are patterns that I would have liked to refactor and simplify.
 
 ## Quick Start
 
@@ -22,7 +24,7 @@ npm run dev
 # Navigate to http://localhost:3000
 
 # 4. Run the test suites with jest
-npm test 
+npm test
 ```
 
 ## Features
@@ -48,7 +50,7 @@ npm test
 
 ## Key Trade-offs Made
 
-**Custom Task Queue vs External Service**: Built in-process task handling instead of using Redis/SQS. This limits horizontal scaling but reduces infrastructure complexity and keeps costs low for smaller deployments. 
+**Custom Task Queue vs External Service**: Built in-process task handling instead of using Redis/SQS. This limits horizontal scaling but reduces infrastructure complexity and keeps costs low for smaller deployments.
 
 **Single Database vs Microservices**: Used one PostgreSQL database for all data instead of separate services for posts/subscribers/delivery. Simpler to deploy and debug, but creates coupling between domains.
 
@@ -81,7 +83,7 @@ ADMIN_USER="admin"
 ADMIN_PASS="your_secure_password"
 CRON_SECRET="generated_secret_key"
 
-FROM_EMAIL="onboarding@letterd.dev"  
+FROM_EMAIL="onboarding@letterd.dev"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
@@ -141,7 +143,7 @@ Test coverage includes:
 - **Email Service**: Verify domain to use in production not personal email
 - **Cron Jobs**: Use a more robust setup like Redis Queue, or AWS MQS, or rabbitmq
 - **Monitoring**: Set up alerts for failed deliveries and stuck tasks
-- **Security**: Use strong passwords, secure secrets, and HTTPS only. 
+- **Security**: Use strong passwords, secure secrets, and HTTPS only.
 
 ### Deployment Platforms
 
@@ -219,6 +221,7 @@ The app supports three distinct publishing workflows:
    - **Updates UI immediately** using SWR cache invalidation
 
 3. **Scheduled Publishing**: Schedule for future delivery
+
    ```json
    {
      "title": "...",
@@ -300,8 +303,8 @@ When you publish a post immediately:
 The test suite includes:
 
 - **Frontend Components**: Form interactions, theme toggling, post display
-- **API Endpoints**: CRUD operations, validation, error handling 
-- **Integration Tests**: End-to-end newsletter workflows 
+- **API Endpoints**: CRUD operations, validation, error handling
+- **Integration Tests**: End-to-end newsletter workflows
 - **Background Processing**: Cron jobs, email delivery, task processing
 
 Something to add for future - Cypress e2e tests

@@ -1,12 +1,10 @@
 "use client";
-    
+
 import React from "react";
 import dynamic from "next/dynamic";
 import { SimpleGrid, Stack, Group, Title, Text } from "@mantine/core";
 
-const NewsletterSignup = dynamic(
-  () => import("@/app/(pages)/signup/signup"),
-);
+const NewsletterSignup = dynamic(() => import("@/app/(pages)/signup/signup"));
 const AuthorPost = dynamic(() => import("@/components/author/post"));
 
 export function MainContentGrid() {

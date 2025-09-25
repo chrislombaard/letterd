@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export const config = { 
-  matcher: ["/admin/:path*", "/api/admin/:path*"] 
+export const config = {
+  matcher: ["/admin/:path*", "/api/admin/:path*"],
 };
 
 export function middleware(req: NextRequest) {
@@ -13,19 +13,24 @@ export function middleware(req: NextRequest) {
 
   const auth = req.headers.get("authorization") || "";
   const [type, b64] = auth.split(" ");
-  
+
   if (type !== "Basic" || !b64) {
     return challenge();
   }
-  
+
   try {
-    const [username, password] = Buffer.from(b64, "base64").toString().split(":");
-    
-    if (username !== process.env.ADMIN_USER || password !== process.env.ADMIN_PASS) {
+    const [username, password] = Buffer.from(b64, "base64")
+      .toString()
+      .split(":");
+
+    if (
+      username !== process.env.ADMIN_USER ||
+      password !== process.env.ADMIN_PASS
+    ) {
       console.warn(`[middleware] Failed auth attempt for user: ${username}`);
       return challenge();
     }
-    
+
     console.log(`[middleware] Admin access granted to: ${username}`);
     return NextResponse.next();
   } catch (error) {
@@ -37,9 +42,9 @@ export function middleware(req: NextRequest) {
 function challenge() {
   return new NextResponse("Unauthorized", {
     status: 401,
-    headers: { 
+    headers: {
       "WWW-Authenticate": 'Basic realm="Admin Panel"',
-      "Content-Type": "text/plain"
+      "Content-Type": "text/plain",
     },
   });
 }

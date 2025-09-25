@@ -31,10 +31,10 @@ export async function processTask(task: TaskType): Promise<boolean> {
     const data =
       attempts >= TASK_CONFIG.MAX_ATTEMPTS
         ? { status: "failed" as const }
-        : { 
-            status: "pending" as const, 
-            runAt: calculateBackoffTime(attempts), 
-            attempts 
+        : {
+            status: "pending" as const,
+            runAt: calculateBackoffTime(attempts),
+            attempts,
           };
 
     await prisma.task.update({ where: { id: task.id }, data });

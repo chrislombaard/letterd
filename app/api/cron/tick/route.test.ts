@@ -24,16 +24,16 @@ describe("Cron Tick API", () => {
   it("should accept request with valid secret", async () => {
     const originalSecret = process.env.CRON_SECRET;
     process.env.CRON_SECRET = "test-secret";
-    
+
     const request = new NextRequest(`${baseUrl}cron/tick?secret=test-secret`);
     const response = await GET(request);
-    
+
     if (originalSecret) {
       process.env.CRON_SECRET = originalSecret;
     } else {
       delete process.env.CRON_SECRET;
     }
-    
+
     expect(response.status).toBe(200);
     const data = await response.json();
     expect(data).toHaveProperty("ok", true);
@@ -53,7 +53,7 @@ describe("Cron Tick API", () => {
 
   it("should return skipped response for duplicate execution within same hour", async () => {
     await cleanupCronExecutions();
-    
+
     const request1 = new NextRequest(`${baseUrl}cron/tick`, {
       headers: {
         "x-vercel-cron": "1",
@@ -75,7 +75,7 @@ describe("Cron Tick API", () => {
 
   it("should process due tasks when called", async () => {
     await cleanupCronExecutions();
-    
+
     const request = new NextRequest(`${baseUrl}cron/tick`, {
       headers: {
         "x-vercel-cron": "1",
@@ -85,7 +85,7 @@ describe("Cron Tick API", () => {
     expect(response.status).toBe(200);
     const data = await response.json();
     expect(data).toHaveProperty("ok", true);
-    
+
     if (data.skipped) {
       expect(data).toHaveProperty("skipped", true);
       expect(data).toHaveProperty("window", expect.any(String));

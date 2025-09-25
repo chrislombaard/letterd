@@ -6,8 +6,9 @@ import { IconSun, IconMoon } from "@tabler/icons-react";
 import { useHydrationSafeColorScheme } from "../../hooks/use-hydration-safe-color-scheme";
 
 export function ThemeToggle() {
-  const { colorScheme, toggleColorScheme, isHydrated } = useHydrationSafeColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { colorScheme, toggleColorScheme, isHydrated } =
+    useHydrationSafeColorScheme();
+  const isDark = colorScheme === "dark";
 
   if (!isHydrated) {
     // Return a static version during SSR to prevent hydration mismatch

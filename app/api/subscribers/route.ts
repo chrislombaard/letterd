@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
         status: SubscriberStatus.ACTIVE,
       },
     });
-    
+
     return NextResponse.json(subscriber, { status: 201 });
   } catch (e: unknown) {
     const error = e as { code?: string };

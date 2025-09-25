@@ -26,7 +26,6 @@ export async function POST(req: NextRequest) {
   let status: PostStatus;
   let scheduledAt: Date | null = null;
   status = PostStatus.DRAFT;
-  
 
   if (parsed.data.publishNow) {
     status = PostStatus.SENT;

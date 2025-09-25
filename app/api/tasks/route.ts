@@ -18,14 +18,14 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json(
       { ok: false, error: "invalid_json" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (!body.type || typeof body.type !== "string") {
     return NextResponse.json(
       { ok: false, error: "type_required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     if (isNaN(runAt.getTime())) {
       return NextResponse.json(
         { ok: false, error: "invalid_runAt" },
-        { status: 400 }
+        { status: 400 },
       );
     }
   }
@@ -47,8 +47,8 @@ export async function POST(req: NextRequest) {
       type: body.type,
       payload:
         body.payload === undefined
-          ? Prisma.DbNull 
-          : body.payload ?? Prisma.JsonNull, 
+          ? Prisma.DbNull
+          : (body.payload ?? Prisma.JsonNull),
       runAt: runAt ?? new Date(),
     },
   });

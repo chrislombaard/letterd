@@ -27,7 +27,7 @@ describe("ViewScheduledPosts", () => {
     });
 
     renderWithMantine(<ViewScheduledPosts />);
-    expect(document.querySelector('.mantine-Loader-root')).toBeTruthy();
+    expect(document.querySelector(".mantine-Loader-root")).toBeTruthy();
   });
 
   it("shows empty state when no scheduled posts", () => {
@@ -59,7 +59,7 @@ describe("ViewScheduledPosts", () => {
     });
 
     renderWithMantine(<ViewScheduledPosts />);
-    
+
     expect(screen.getByText("Future Newsletter")).toBeInTheDocument();
     expect(screen.getByText("Subject: Coming Soon!")).toBeInTheDocument();
     expect(screen.getByText("Scheduled")).toBeInTheDocument();
@@ -73,6 +73,8 @@ describe("ViewScheduledPosts", () => {
     });
 
     renderWithMantine(<ViewScheduledPosts />);
-    expect(screen.getByText("Failed to load scheduled posts")).toBeInTheDocument();
+    expect(
+      screen.getByText("Failed to load scheduled posts"),
+    ).toBeInTheDocument();
   });
 });

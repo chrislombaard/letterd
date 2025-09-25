@@ -13,9 +13,14 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   line-height: 1.6;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 /* Dark mode button styling */
@@ -24,7 +29,8 @@ body {
   color: #ffffff;
 }
 
-[data-mantine-color-scheme="dark"] .mantine-Button-root[data-variant="filled"][data-color="dark"] {
+[data-mantine-color-scheme="dark"]
+  .mantine-Button-root[data-variant="filled"][data-color="dark"] {
   background-color: #ffffff;
   color: #000000;
 }

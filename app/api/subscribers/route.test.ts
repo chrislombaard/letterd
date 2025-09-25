@@ -63,7 +63,7 @@ describe("Subscribers API", () => {
 
   it("should return 409 for duplicate email (POST)", async () => {
     const uniqueEmail = `duplicate-${Date.now()}@example.com`;
-    
+
     const firstRequest = new NextRequest(`${baseUrl}subscribers`, {
       method: "POST",
       body: JSON.stringify({
@@ -87,7 +87,7 @@ describe("Subscribers API", () => {
 
     const response = await POST(duplicateRequest);
     expect(response.status).toBe(409);
-    
+
     const data = await response.json();
     expect(data).toHaveProperty("error", "Email already subscribed");
   });

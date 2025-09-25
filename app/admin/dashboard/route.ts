@@ -10,7 +10,7 @@ export async function GET() {
       totalSubscribers,
       activeSubscribers,
       pendingDeliveries,
-      recentTasks
+      recentTasks,
     ] = await Promise.all([
       prisma.post.count(),
       prisma.post.count({ where: { status: "SCHEDULED" } }),
@@ -26,8 +26,8 @@ export async function GET() {
           type: true,
           status: true,
           createdAt: true,
-        }
-      })
+        },
+      }),
     ]);
 
     return NextResponse.json({
@@ -49,14 +49,13 @@ export async function GET() {
         recentTasks: recentTasks.length,
       },
       recentTasks,
-      systemStatus: "operational"
+      systemStatus: "operational",
     });
-    
   } catch (error) {
     console.error("[admin] Dashboard error:", error);
     return NextResponse.json(
       { error: "Failed to fetch dashboard data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

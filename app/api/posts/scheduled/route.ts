@@ -23,7 +23,7 @@ export async function GET() {
     return NextResponse.json(scheduledPosts);
   } catch (error) {
     console.error("Error fetching scheduled posts:", error);
-    
+
     return NextResponse.json(
       { error: "Failed to fetch scheduled posts" },
       { status: 500 },

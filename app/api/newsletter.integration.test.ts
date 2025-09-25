@@ -39,7 +39,7 @@ describe("Newsletter Integration Tests", () => {
         email: string;
       }
       const subscribers: TestSubscriber[] = [];
-      
+
       for (let i = 0; i < 3; i++) {
         const email = createTestEmail();
         const request = new NextRequest(`${baseUrl}subscribers`, {

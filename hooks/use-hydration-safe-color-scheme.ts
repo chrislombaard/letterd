@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useMantineColorScheme } from '@mantine/core';
+import { useState, useEffect } from "react";
+import { useMantineColorScheme } from "@mantine/core";
 
 export function useHydrationSafeColorScheme() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -12,8 +12,8 @@ export function useHydrationSafeColorScheme() {
   }, []);
 
   return {
-    colorScheme: isHydrated ? colorScheme : 'light',
+    colorScheme: isHydrated ? colorScheme : "light",
     toggleColorScheme,
-    isHydrated
+    isHydrated,
   };
 }

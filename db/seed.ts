@@ -21,7 +21,7 @@ const postData = [
 
 export async function main() {
   const [welcomePost, promoPost] = await Promise.all(
-    postData.map((post) => prisma.post.create({ data: post }))
+    postData.map((post) => prisma.post.create({ data: post })),
   );
 
   const subscriberData: Prisma.SubscriberCreateInput[] = [

@@ -31,7 +31,11 @@ describe("Tasks API", () => {
       method: "POST",
       body: JSON.stringify({
         type: "email.send",
-        payload: { to: "test@example.com", subject: "Test", html: "<p>Test</p>" },
+        payload: {
+          to: "test@example.com",
+          subject: "Test",
+          html: "<p>Test</p>",
+        },
       }),
       headers: {
         "Content-Type": "application/json",
@@ -125,7 +129,7 @@ describe("Tasks API", () => {
 
     const response = await POST(request);
     expect(response.status).toBe(400);
-    
+
     const data = await response.json();
     expect(data).toMatchObject({
       ok: false,

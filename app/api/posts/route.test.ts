@@ -60,7 +60,7 @@ describe.skip("Posts API", () => {
     expect(response.status).toBe(201);
 
     const data = await response.json();
-    
+
     expect(data).toMatchObject({
       title: "Scheduled Post",
       status: "SCHEDULED",
@@ -87,7 +87,7 @@ describe.skip("Posts API", () => {
     expect(response.status).toBe(201);
 
     const data = await response.json();
-    
+
     expect(data).toMatchObject({
       title: "Immediate Post",
       status: "SENT",

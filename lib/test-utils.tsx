@@ -1,16 +1,15 @@
-import React from 'react';
-import { render as rtlRender, RenderOptions } from '@testing-library/react';
-import { MantineProvider } from '@mantine/core';
+import React from "react";
+import { render as rtlRender, RenderOptions } from "@testing-library/react";
+import { MantineProvider } from "@mantine/core";
 
 function TestWrapper({ children }: { children: React.ReactNode }) {
-  return (
-    <MantineProvider>
-      {children}
-    </MantineProvider>
-  );
+  return <MantineProvider>{children}</MantineProvider>;
 }
 
-function render(ui: React.ReactElement, options?: Omit<RenderOptions, 'wrapper'>) {
+function render(
+  ui: React.ReactElement,
+  options?: Omit<RenderOptions, "wrapper">,
+) {
   return rtlRender(ui, { wrapper: TestWrapper, ...options });
 }
 
@@ -22,5 +21,5 @@ export const mockFetch = (response: any, ok = true) => {
   });
 };
 
-export * from '@testing-library/react';
+export * from "@testing-library/react";
 export { render };

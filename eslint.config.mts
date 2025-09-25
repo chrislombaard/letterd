@@ -13,21 +13,21 @@ export default defineConfig([
       ".turbopack/**",
       "dist/**",
       "build/**",
-      "next-env.d.ts"
-    ]
+      "next-env.d.ts",
+    ],
   },
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     plugins: { js },
     extends: ["js/recommended"],
-    languageOptions: { 
-      globals: { 
-        ...globals.browser, 
+    languageOptions: {
+      globals: {
+        ...globals.browser,
         ...globals.node,
-        ...globals.es2020
+        ...globals.es2020,
       },
       ecmaVersion: 2020,
-      sourceType: "module"
+      sourceType: "module",
     },
   },
   ...tseslint.configs.recommended,
@@ -35,13 +35,13 @@ export default defineConfig([
     ...pluginReact.configs.flat.recommended,
     settings: {
       react: {
-        version: "detect"
-      }
+        version: "detect",
+      },
     },
     rules: {
       ...pluginReact.configs.flat.recommended.rules,
       "react/react-in-jsx-scope": "off",
-      "react/jsx-uses-react": "off"
-    }
-  }
+      "react/jsx-uses-react": "off",
+    },
+  },
 ]);

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MantineProvider } from "@mantine/core";
-import NewsletterHome from "./newsletter-home";
+import NewsletterHome from "./home";
 
 jest.mock("next/dynamic", () => {
   return jest.fn((importFunc) => {
